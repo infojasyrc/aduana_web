@@ -1,0 +1,172 @@
+'''
+Created on Feb 13, 2014
+
+@author: Jose Antonio Sal y Rosas Celi
+'''
+
+from captcha import Captcha
+from commands import Commands
+import os
+import random
+from datetime import datetime
+import ConfigParser
+import shutil
+
+
+class Aduana(object):
+
+    def __init__(self):
+        self.project_folder = os.path.dirname(__file__)
+        self.cookies_folder = os.path.join(self.project_folder, "cookies")
+        self.captcha_folder = os.path.join(self.project_folder, "captcha")
+        self.filename = ""
+        self.url_captcha = ""
+        self.ur_final = ""
+    
+    def set_parameters(self, cod_aduana, ano_prese, cod_registro, num_dua, tipo_doc):
+        number = random.randint(0,5)
+        realtime = datetime.now().strftime("%Y%m%d%H%M%S")
+        filename = "%s_%d" % (realtime, number)
+        
+        self.filename = filename
+        self.cod_aduana = cod_aduana
+        self.ano_prese = ano_prese
+        self.cod_registro = cod_registro
+        self.num_dua = num_dua
+        self.tipo_doc = tipo_doc
+        self.cookie_file = os.path.join(self.cookies_folder, filename+".txt")
+        
+        self.url_captcha, self.url_form = self.read_config()
+    
+    def get_captcha(self, image_file):
+        self.obj_captcha = Captcha()
+        self.obj_captcha.set_parameters(self.filename, self.captcha_folder, self.url_captcha)
+        self.obj_captcha.execute(image_file)
+        text = self.obj_captcha.get_text_captcha()
+
+        return text
+    
+    def get_previous_cookie(self):
+        # Command:
+        # wget --save-cookies '\path\to\cookie_folder\cookies.txt 
+        # --keep-session-cookies -r -P \path\to\cookie_folder -nH url
+        
+        launcher = "wget"
+        parameter_cookie = '--save-cookies %s' % self.cookie_file
+        parameter_prefix = '-r -P %s'% self.cookies_folder
+        parameter_session = '--keep-session-cookies'
+        parameter_no_folder = '-nH'
+        
+        command = "%s %s %s %s %s %s" % (launcher, parameter_cookie, parameter_session,
+                                         parameter_prefix, parameter_no_folder, self.url_captcha)
+        
+        return command
+    
+    def move_image(self):
+        new_folder = os.path.join(self.cookies_folder, "ol-ad-ao")
+        src = os.path.join(new_folder, "captcha?accion=image")
+        
+        dst = os.path.join(self.captcha_folder, self.filename+".jpeg")
+        shutil.move(src, dst)
+        
+        return dst
+    
+    def clean_data(self, image_file):
+        os.remove(self.cookie_file)
+        os.remove(self.image_file)
+        os.removedirs(os.path.join(self.cookies_folder, "ol-ad-ao"))
+    
+    def check_successfull_captcha(self, result_cmmd):
+        message_error = "El codigo que muestra la imagen no coincide"
+        message_error = message_error.lower()
+        
+        result_cmmd = result_cmmd.lower()
+        
+        if result_cmmd.find(message_error) != -1:
+            return False
+        else:
+            return True
+        
+    
+    def set_command(self, captcha):
+        parameter_cod_aduana = 'codi_aduan=%s' % self.cod_aduana
+        parameter_ano_prese = 'ano_prese=%s' % self.ano_prese
+        parameter_cod_registro = 'codi_regi=%s' % self.cod_registro
+        parameter_correlativo = 'nume_corre=%s' % self.num_dua
+        parameter_tipo_doc = 'tipo_doc=%s' % self.tipo_doc
+        parameter_captcha = 'codigo=%s' % captcha
+        
+        value_post = '%s&%s&%s&%s&%s&%s' % (parameter_cod_aduana, parameter_ano_prese, parameter_cod_registro,
+                                            parameter_correlativo, parameter_tipo_doc, parameter_captcha)
+        
+        launcher = "wget"
+        parameter_cookie = '--load-cookies "%s"' % self.cookie_file
+        parameter_prefix = '-P "%s"'% self.cookies_folder
+        parameter_session = '--keep-session-cookies'
+        parameter_post = '--post-data="%s"' % value_post
+        
+        command = "%s %s %s %s %s %s" % (launcher, parameter_post, parameter_session, parameter_cookie,
+                                         parameter_prefix, self.url_form)
+        
+        return command
+    
+    def read_config(self):
+        config_file = os.path.join(self.project_folder,"config.ini")
+        
+        config = ConfigParser.ConfigParser()
+        config.read(config_file)
+        
+        url_captcha = str(config.get('basic','url_captcha'))
+        url_final = str(config.get('basic','url_final'))
+        
+        return url_captcha, url_final
+    
+    def execute(self):
+        obj_command = Commands()
+        
+        while True:
+            command_previous_cookie = self.get_previous_cookie()
+            #print command_previous_cookie
+            obj_command.execute_command(command_previous_cookie)
+            dict_result_previous_cookie = obj_command.get_final_result()
+            
+            if dict_result_previous_cookie["result"]:
+                image_file = self.move_image()
+                captcha = self.get_captcha(image_file)
+                print captcha
+                
+                if len(captcha) > 2:
+                    command = self.set_command(captcha)
+                
+                    obj_command.execute_command(command)
+                    dict_final_result = obj_command.get_final_result()
+                    
+                    if dict_final_result["result"]:
+                        if self.check_successfull_captcha(dict_final_result["message"]):
+                            print "Great" 
+                            break
+                    else:
+                        print dict_final_result["message"]
+                        continue
+                else:
+                    self.clean_data(image_file)
+                    continue
+                        
+            else:
+                continue
+        
+        #self.clean_data(image_file)
+        
+
+
+if __name__ == '__main__':
+    cod_aduana = "118"
+    ano_prese = "2013"
+    cod_registro = "10"
+    num_dua = "548164"
+    tipo_doc = "01"
+    
+    aduana = Aduana()
+    aduana.set_parameters(cod_aduana, ano_prese, cod_registro, num_dua, tipo_doc)
+    aduana.execute()
+    
