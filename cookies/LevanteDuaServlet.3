@@ -1,0 +1,234 @@
+<HTML>
+<HEAD>
+<TITLE>Levante Autorizado de una DUA</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=windows-1252">
+<SCRIPT language=JavaScript>
+ var gCount = 0;
+
+<!--
+function click(e) {
+	if (document.all) {
+		if (event.button==2||event.button==3) {
+			alert("PORTAL - Derechos Reservados - 2003");
+			return false;
+		}
+	}
+	if (document.layers) {
+		if (e.which == 3) {
+			alert("PORTAL - Derechos Reservados - 2003");
+			return false;
+		}
+	}
+}
+if (document.layers) {
+	document.captureEvents(Event.MOUSEDOWN);
+}
+document.onmousedown=click;
+// -->
+
+function document.onkeypress() {
+	if (window.event.keyCode==13 )
+	Ingresar()
+}
+
+function EsCaracter(cadena) {
+var caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+var i;
+var valido = true;
+    if ( cadena.length == 0 ) {  ///   ESTA VACIO
+        return false;
+    }
+
+	if (cadena.length >= 4) {
+		for(i=0;i<cadena.length;i++) {
+			if (caracteres.indexOf(cadena.charAt(i)) == -1) {
+				valido = false;
+				break;
+			}
+		}
+	} else {
+		valido = false;
+	}
+  return valido;
+}
+
+function noBanco(){ 
+    window.alert ("Esta dua no requiere ser cancelada en Banco para verificar el levante.")     
+} 
+
+function goRefresh() {
+	document.getElementById("codigo").value = "";
+	document.getElementById("captchaimg").src="/ol-ad-ao/captcha?accion=image&nmagic=" + gCount;
+	gCount = gCount + 1;  
+} 
+
+</SCRIPT>
+<SCRIPT language="JavaScript" src="/aduanas/js/diseno.js"> </SCRIPT>
+</HEAD>
+<SCRIPT language=javascript>document.write(cab_pag_inicio("Consulta de DUA", "/aduanas/aduanet.htm"))</SCRIPT>
+
+
+  
+		<BODY bgColor=#ffffff>  
+
+
+<FORM ACTION='/ol-ad-ao/LevanteDuaServlet' METHOD='post'>
+<CENTER><font face='verdana,arial' size='2'>Ingrese Número de DUA: <b> 118 - 2013 - 10 - </b></font>
+<INPUT NAME='nume_corre'  SIZE=6 MAXLENGTH=6 >&nbsp;&nbsp;
+|| &nbsp;&nbsp;
+Ingrese el c&oacute;digo de la imagen:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>
+        <input type="text" class="auth_input" id="codigo" name="codigo" size="4" maxlength="4"
+		onblur="this.value=this.value.toUpperCase()"
+		onchange="this.value=this.value.toUpperCase()" onKeyUp="this.value=this.value.toUpperCase()" >
+		<img name="captchaimg" id="captchaimg" src="/ol-ad-ao/captcha?accion=image"/>&nbsp; 
+		<a href="javascript:goRefresh();">Refrescar c&oacute;digo</a> <br>
+	<INPUT TYPE='SUBMIT' VALUE='Consultar'>	
+
+<INPUT  TYPE='hidden'  NAME='codi_aduan'  VALUE = '118' >
+<INPUT  TYPE='hidden'  NAME='ano_prese'  VALUE = '2013' >
+<INPUT  TYPE='hidden'  NAME='codi_regi'  VALUE = '10' >
+<INPUT  TYPE='hidden'  NAME='tipo_doc'  VALUE = '01' >
+<INPUT  TYPE='hidden'  NAME='digi_veri'>
+<INPUT  TYPE='hidden'  NAME='nume_sufi'  VALUE = '00' >
+<INPUT  TYPE='hidden'  NAME='Prov'  VALUE = '1' ></CENTER>
+
+
+</FORM>
+
+<TABLE WIDTH='100%' BORDER>
+<TR VALIGN=top>
+<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;N&uacute;mero de Declaraci&oacute;n :</font></TD>
+<TD WIDTH='50%'><font face='verdana,arial' size='2'><B>&nbsp;118-13-10-548164-01-3-00</B></font></TD>
+<td rowspan='13' valign='middle'>
+
+
+
+<!-- jenciso se agrega estado de la declaracion -->
+
+   <img src='/aduanas/images/rojo.gif'>
+   <font face='verdana,arial' size='2' color="Red"><B><center></center></B></font><font face='verdana,arial' size='2'><B><center> </center></B></font>
+   <font face='verdana,arial' size='2'><B><center> </center></B></font></TD></TR>
+   
+
+
+	<TR VALIGN=top>
+	<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;Fecha y Hora de Cancelaci&oacute;n :</font></TD>
+	<TD WIDTH='50%'><font face='verdana,arial' size='2' color='#0000FF'>&nbsp;11/12/2013&nbsp;&nbsp;17:53:55</font></TD>
+	</TR>
+
+
+<TR VALIGN=top>
+<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;Agencia de Aduanas :</font></TD>
+<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;0659 INTERAMERICAN SERVICE CO. S.A.C.</font></TD>
+</TR>
+
+<TR VALIGN=top>
+<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;Banco :</font></TD>
+<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;001 BANCO DE CREDITO</font></TD>
+</TR>
+<TR VALIGN=top>
+<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;Monto Acotado (USD) :</font></TD>
+<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;6,083.00</font></TD>
+</TR>
+
+<TR VALIGN=top>
+<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;Monto Cancelado (S/.) :</font></TD>
+<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;16,984.00 - PAGO ELECTRONICO</font></TD>
+</TR>
+<TR VALIGN=middle>
+<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;Valor CIF (USD) :</font></TD>
+<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;CIF&nbsp;&nbsp;: 19,607.82&nbsp;<BR>&nbsp;FOB : 19,209.00&nbsp;&nbsp;&nbsp;Flete : 382.72&nbsp;&nbsp;&nbsp;Seguro : 16.10</font></TD>
+</TR>
+
+<TR VALIGN=top>
+<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;Fecha de Numeraci&oacute;n :</font></TD>
+<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;11/12/2013&nbsp;&nbsp;12:15:43</font></TD>
+</TR>
+
+
+<TR VALIGN=top>
+<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;Comitente :&nbsp;&nbsp;&nbsp;<b><font color='red'>( ES IMPORTADOR FRECUENTE )</font></b></font></TD>
+<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;4 - 20100128056&nbsp;&nbsp;SAGA FALABELLA S A                                                                                  </font></TD>
+</TR>
+
+
+	<TR VALIGN=top>
+	<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;Observaciones :</font></TD>
+	<TD WIDTH='50%'><font face='verdana,arial' size='2' color='#0000FF'>&nbsp; &nbsp;DUA SADA pendiente de DATADO.<br></font></TD>
+	</TR>
+
+
+<TR VALIGN=top>
+
+<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;Punto de llegada :</font></TD>
+<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;3655</font></TD>
+</TR>
+
+<TR VALIGN=top>
+<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;Cantidad de Bultos :</font></TD>
+<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;151</font></TD>
+</TR>
+<TR VALIGN=top>
+<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;Peso Bruto (KG) :</font></TD>
+<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;1586</font></TD>
+</TR>
+<TR VALIGN=top>
+<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;Fecha y Hora de salida de la mercancía :</font></TD>
+<TD WIDTH='50%'><font face='verdana,arial' size='2'>&nbsp;--/--/----&nbsp;&nbsp; </font></TD>
+</TR>
+</TABLE>
+<CENTER>
+
+<BR>
+<TABLE WIDTH='100%' BORDER=0>
+	<TR>
+	  <TD align="left"><font face='verdana,arial' size=1 color='#000080'><b>Fecha&nbsp;:&nbsp;</b>17/02/2014&nbsp;&nbsp;<b>Hora&nbsp;:&nbsp;</b>18:02:18</font></TD>
+	</TR>
+</TABLE>
+
+   <font face='verdana,arial' size='2'><B>TIPO DE DESPACHO : </B>SISTEMA ANTICIPADO
+
+   
+	   &nbsp;&nbsp;&nbsp;<B>ESTADO : </B> PENDIENTE DE REGULARIZAR
+   
+   <BR><BR>
+      
+   <font face='verdana,arial' size='2'><B>ESTADO DE LA DILIGENCIA : </B>PENDIENTE</font>
+   <BR>
+   
+   <BR>
+   
+
+
+<CENTER><font size=2 color='#000080'><i><B>LEVANTE NO AUTORIZADO</B></i></font></CENTER>
+
+
+
+
+<br>
+<CENTER>
+
+|&nbsp;<a href='/cl-ti-itsigad/sigadS02Alias?accion=detalleExp&detAnioExp=2014&detNumExp=2832&detCodAduana=118 '><font face='verdana,arial' size=2>Expedientes Asociados</font></a>&nbsp;|&nbsp;
+<a href='/servlet/CR10Manif?codi_aduan=118&ano_prese=13&nume_corre=548164&cda=1181310548164013&nume_sufij=00'><font face='verdana,arial' size=2>Datos de Manifiesto</font></a>&nbsp;|&nbsp;
+
+<a href='/servlet/SGReca01?aduana=118&ano=13&situacion=XREGIMENES&codigo=&usuario=&nro=548164&tdoc=2&codiregi=10'><font face='verdana,arial' size=2>LC ASOCIADAS</font></a>&nbsp;|&nbsp;
+<a href='/servlet/CR10Noti?xadu=118&xano=13&xdua=548164&xreg=10'><font face='verdana,arial' size=2>Notificaciones</font></a>&nbsp;|&nbsp;
+
+
+	<a href='/ol-ad-itace/consaceS01alias?accion=consultaxDUA&aduana=118&amp;ano=13&amp;numero=548164&amp;regimen=10'><font face='verdana,arial' size=2>ACE</font></a>&nbsp;|&nbsp;
+	
+
+<a href='/servlet/SgCDUI2?codaduana=118&anoprese=2013&numecorre=548164&n=10&cantserie='><font face='verdana,arial' size=2>Series</font></a>&nbsp;|&nbsp;
+
+<a href='/ol-ad-itconsultadua/cntS01Alias?accion=ConsultaContenedor&codi_regi=10&codi_aduan=118&ano_prese=13&nume_corre=548164&nume_termi=3655'><font face='verdana,arial' size=2>Relación de Contenedores</font></a>&nbsp;|&nbsp;
+
+<a href='/ol-ad-itconsultadua/cntS01Alias?accion=ConsultaPlazos&codi_aduan=118&codi_regi=10&ano_prese=13&nume_corre=548164&fec_nume=11/12/2013'><font face='verdana,arial' size=2>Conclusi&oacute;n del Despacho</font></a>&nbsp;|&nbsp;
+
+
+</CENTER>
+<CENTER><A HREF='javascript:window.history.back()'><font face='verdana,arial' size=2>Otra Consulta</font></A></CENTER>
+
+<p><font face='verdana,arial' size=2><center><a href='/ol-ad-ao/aduanas/informao/jsp/ing_fechlevan.jsp?codi_aduan=118&amp;ano_prese=2013&amp;nume_corre=548164&amp;codi_regi=10&amp;tipo_docu=01'>Para los Terminales de Almacenamiento y Depósitos Autorizados: Actualización de Fecha y Hora de Salida de Mercancia</A></center></p>
+
+</BODY>
+</HTML>

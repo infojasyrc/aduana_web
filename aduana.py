@@ -19,6 +19,7 @@ class Aduana(object):
         self.project_folder = os.path.dirname(__file__)
         self.cookies_folder = os.path.join(self.project_folder, "cookies")
         self.captcha_folder = os.path.join(self.project_folder, "captcha")
+        self.bin_folder = os.path.join(self.project_folder, "bin")
         self.filename = ""
         self.url_captcha = ""
         self.ur_final = ""
@@ -72,9 +73,15 @@ class Aduana(object):
         return dst
     
     def clean_data(self, image_file):
-        os.remove(self.cookie_file)
-        os.remove(self.image_file)
-        os.removedirs(os.path.join(self.cookies_folder, "ol-ad-ao"))
+        try:
+            os.remove(self.cookie_file)
+            os.remove(self.image_file)
+            
+            if os.path.exists(os.path.join(self.cookies_folder, "ol-ad-ao")):
+                os.removedirs(os.path.join(self.cookies_folder, "ol-ad-ao"))
+        
+        except IOError:
+            print "Error"
     
     def check_successfull_captcha(self, result_cmmd):
         message_error = "El codigo que muestra la imagen no coincide"
@@ -107,6 +114,17 @@ class Aduana(object):
         
         command = "%s %s %s %s %s %s" % (launcher, parameter_post, parameter_session, parameter_cookie,
                                          parameter_prefix, self.url_form)
+        
+        return command
+    
+    def save_data(self):
+        final_html = os.path.join(self.cookies_folder,"LevanteDuaServlet")
+        
+        launcher = os.path.join(self.bin_folder,"projectaduana")
+        
+        command = '%s "%s" "%s" "%s" "%s" "%s" "%s"' % (launcher, self.cod_aduana, self.ano_prese,
+                                                        self.cod_registro, self.num_dua, 
+                                                        self.tipo_doc, final_html)
         
         return command
     
@@ -143,7 +161,10 @@ class Aduana(object):
                     
                     if dict_final_result["result"]:
                         if self.check_successfull_captcha(dict_final_result["message"]):
-                            print "Great" 
+                            final_cmmd = self.save_data()
+                            obj_command.execute_command(final_cmmd)
+                            dict_save = obj_command.get_final_result()
+                            print dict_save["message"] 
                             break
                     else:
                         print dict_final_result["message"]
@@ -156,7 +177,6 @@ class Aduana(object):
                 continue
         
         #self.clean_data(image_file)
-        
 
 
 if __name__ == '__main__':

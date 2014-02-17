@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <Version Value="9"/>
+    <BuildModes Active="Default"/>
+    <Units Count="4">
+      <Unit0>
+        <Filename Value="projectaduana.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="projectaduana"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="0"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="20"/>
+        <CursorPos X="32" Y="41"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="src/dbadmin.pas"/>
+        <UnitName Value="dbadmin"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="19" Y="8"/>
+        <UsageCount Value="20"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="dbadmin.pas"/>
+        <UnitName Value="dbadmin"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="21" Y="8"/>
+        <UsageCount Value="20"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="admindb.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="admindb"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="92"/>
+        <CursorPos X="53" Y="112"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit3>
+    </Units>
+    <General>
+      <ActiveWindowIndexAtStart Value="0"/>
+    </General>
+    <JumpHistory Count="22" HistoryIndex="21">
+      <Position1>
+        <Filename Value="projectaduana.lpr"/>
+        <Caret Line="9" Column="29" TopLine="1"/>
+      </Position1>
+      <Position2>
+        <Filename Value="projectaduana.lpr"/>
+        <Caret Line="11" Column="11" TopLine="1"/>
+      </Position2>
+      <Position3>
+        <Filename Value="projectaduana.lpr"/>
+        <Caret Line="9" Column="25" TopLine="1"/>
+      </Position3>
+      <Position4>
+        <Filename Value="projectaduana.lpr"/>
+        <Caret Line="10" Column="35" TopLine="1"/>
+      </Position4>
+      <Position5>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="11" Column="41" TopLine="70"/>
+      </Position5>
+      <Position6>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="65" Column="39" TopLine="52"/>
+      </Position6>
+      <Position7>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="69" Column="36" TopLine="58"/>
+      </Position7>
+      <Position8>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="12" Column="48" TopLine="90"/>
+      </Position8>
+      <Position9>
+        <Filename Value="projectaduana.lpr"/>
+        <Caret Line="29" Column="16" TopLine="20"/>
+      </Position9>
+      <Position10>
+        <Filename Value="projectaduana.lpr"/>
+        <Caret Line="27" Column="102" TopLine="14"/>
+      </Position10>
+      <Position11>
+        <Filename Value="projectaduana.lpr"/>
+        <Caret Line="76" Column="75" TopLine="57"/>
+      </Position11>
+      <Position12>
+        <Filename Value="projectaduana.lpr"/>
+        <Caret Line="39" Column="50" TopLine="31"/>
+      </Position12>
+      <Position13>
+        <Filename Value="projectaduana.lpr"/>
+        <Caret Line="35" Column="48" TopLine="25"/>
+      </Position13>
+      <Position14>
+        <Filename Value="projectaduana.lpr"/>
+        <Caret Line="34" Column="37" TopLine="21"/>
+      </Position14>
+      <Position15>
+        <Filename Value="projectaduana.lpr"/>
+        <Caret Line="93" Column="3" TopLine="22"/>
+      </Position15>
+      <Position16>
+        <Filename Value="projectaduana.lpr"/>
+        <Caret Line="37" Column="29" TopLine="22"/>
+      </Position16>
+      <Position17>
+        <Filename Value="projectaduana.lpr"/>
+        <Caret Line="35" Column="72" TopLine="22"/>
+      </Position17>
+      <Position18>
+        <Filename Value="projectaduana.lpr"/>
+        <Caret Line="32" Column="43" TopLine="19"/>
+      </Position18>
+      <Position19>
+        <Filename Value="projectaduana.lpr"/>
+        <Caret Line="39" Column="110" TopLine="19"/>
+      </Position19>
+      <Position20>
+        <Filename Value="projectaduana.lpr"/>
+        <Caret Line="34" Column="40" TopLine="20"/>
+      </Position20>
+      <Position21>
+        <Filename Value="projectaduana.lpr"/>
+        <Caret Line="33" Column="49" TopLine="20"/>
+      </Position21>
+      <Position22>
+        <Filename Value="projectaduana.lpr"/>
+        <Caret Line="34" Column="24" TopLine="20"/>
+      </Position22>
+    </JumpHistory>
+  </ProjectSession>
+  <EditorMacros Count="0"/>
+</CONFIG>

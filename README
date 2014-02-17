@@ -1,0 +1,5 @@
+Aduana Web.
+- Socket
+- Obtiene la informacion de la Aduana.
+- Obtiene el captcha y permite el envio de datos a traves del comando wget.
+- Almacena el HTML de resultado.
