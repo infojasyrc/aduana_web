@@ -11,6 +11,9 @@ import random
 from datetime import datetime
 import ConfigParser
 import shutil
+import re
+from string import replace
+import unicodedata
 
 
 class Aduana(object):
@@ -18,11 +21,18 @@ class Aduana(object):
     def __init__(self):
         self.project_folder = os.path.dirname(__file__)
         self.cookies_folder = os.path.join(self.project_folder, "cookies")
+        if not os.path.exists(self.cookies_folder):
+            os.mkdir(self.cookies_folder)
+        
         self.captcha_folder = os.path.join(self.project_folder, "captcha")
         self.bin_folder = os.path.join(self.project_folder, "bin")
+        self.final_folder = os.path.join(self.project_folder, "final")
+        
         self.filename = ""
         self.url_captcha = ""
         self.ur_final = ""
+        self.src_html = ""
+        self.final_html = ""
     
     def set_parameters(self, cod_aduana, ano_prese, cod_registro, num_dua, tipo_doc):
         number = random.randint(0,5)
@@ -63,19 +73,39 @@ class Aduana(object):
         
         return command
     
-    def move_image(self):
-        new_folder = os.path.join(self.cookies_folder, "ol-ad-ao")
-        src = os.path.join(new_folder, "captcha?accion=image")
+    def move_file(self, src, dst):
+        shutil.move(src, dst)
+    
+    def move_cookie_folder(self):
+        tmp_folder = os.path.join(self.cookies_folder, "ol-ad-ao")
+        src = os.path.join(tmp_folder,"captcha?accion=image")
         
         dst = os.path.join(self.captcha_folder, self.filename+".jpeg")
-        shutil.move(src, dst)
+        
+        self.move_file(src, dst)
         
         return dst
     
-    def clean_data(self, image_file):
+    def move_final_destination(self):
+        src = os.path.join(self.cookies_folder,"LevanteDuaServlet")
+        self.final_html = os.path.join(self.final_folder,self.filename+".html")
+        self.move_file(src, self.final_html)
+    
+    def clean_data(self, image_file=""):
         try:
             os.remove(self.cookie_file)
-            os.remove(self.image_file)
+            txt_file = os.path.join(self.captcha_folder,self.filename+".txt")
+            img_file = os.path.join(self.captcha_folder,self.filename+".jpeg")
+            os.remove(txt_file)
+            os.remove(img_file)
+            
+            if image_file != "":
+                os.remove(image_file)
+            
+            webpage = os.path.join(self.cookies_folder,"LevanteDuaServlet")
+            
+            if os.path.exists(webpage):
+                os.remove(webpage)
             
             if os.path.exists(os.path.join(self.cookies_folder, "ol-ad-ao")):
                 os.removedirs(os.path.join(self.cookies_folder, "ol-ad-ao"))
@@ -93,7 +123,6 @@ class Aduana(object):
             return False
         else:
             return True
-        
     
     def set_command(self, captcha):
         parameter_cod_aduana = 'codi_aduan=%s' % self.cod_aduana
@@ -128,8 +157,32 @@ class Aduana(object):
         
         return command
     
+    def read_html(self):
+        new_data = ""
+        if os.path.exists(self.final_html):
+            tmp_file = open(self.final_html,"r")
+            for line in tmp_file:
+                #print line.strip()
+                if line.strip() == '' or line.strip() == '\n':
+                    continue
+                else:
+                    #print line.decode('Windows-1252').encode('utf-8')
+                    new_data += line.strip().decode('Windows-1252').encode('utf-8')
+            tmp_file.close()
+        if new_data != "":
+            output = re.sub(r'<SCRIPT.*>(.*)</SCRIPT><B', '<B', new_data)
+            output = replace(output, "'", '"')
+            
+            s = ''.join((c for c in unicodedata.normalize('NFD',unicode(output)) if unicodedata.category(c) != 'Mn'))
+            new_output = s.decode()
+            
+            final_name = os.path.join(self.final_folder,"final_"+self.filename+".html")
+            final_html_file = open(final_name,"w")
+            final_html_file.write(new_output)
+            final_html_file.close() 
+    
     def read_config(self):
-        config_file = os.path.join(self.project_folder,"config.ini")
+        config_file = os.path.join(self.bin_folder,"config.ini")
         
         config = ConfigParser.ConfigParser()
         config.read(config_file)
@@ -149,7 +202,7 @@ class Aduana(object):
             dict_result_previous_cookie = obj_command.get_final_result()
             
             if dict_result_previous_cookie["result"]:
-                image_file = self.move_image()
+                image_file = self.move_cookie_folder()
                 captcha = self.get_captcha(image_file)
                 print captcha
                 
@@ -161,13 +214,20 @@ class Aduana(object):
                     
                     if dict_final_result["result"]:
                         if self.check_successfull_captcha(dict_final_result["message"]):
-                            final_cmmd = self.save_data()
-                            obj_command.execute_command(final_cmmd)
-                            dict_save = obj_command.get_final_result()
-                            print dict_save["message"] 
+                            self.move_final_destination()
+                            self.read_html()
+                            #final_cmmd = self.save_data()
+                            #obj_command.execute_command(final_cmmd)
+                            #dict_save = obj_command.get_final_result()
+                            #print dict_save["message"] 
                             break
+                        else:
+                            print dict_final_result["message"]
+                            self.clean_data(image_file)
+                            continue
                     else:
                         print dict_final_result["message"]
+                        self.clean_data(image_file)
                         continue
                 else:
                     self.clean_data(image_file)
@@ -189,4 +249,5 @@ if __name__ == '__main__':
     aduana = Aduana()
     aduana.set_parameters(cod_aduana, ano_prese, cod_registro, num_dua, tipo_doc)
     aduana.execute()
+    aduana.clean_data()
     

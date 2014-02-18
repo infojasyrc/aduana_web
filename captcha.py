@@ -30,8 +30,8 @@ class Captcha(object):
 
     def read_config(self):
         project_folder = os.path.dirname(__file__)
-        
-        config_file = os.path.join(project_folder,"config.ini")
+        bin_folder = os.path.join(project_folder,"bin")
+        config_file = os.path.join(bin_folder,"config.ini")
         
         config = ConfigParser.ConfigParser()
         config.read(config_file)

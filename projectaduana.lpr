@@ -6,7 +6,7 @@ uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
   cthreads,
   {$ENDIF}{$ENDIF}
-  Classes, SysUtils, CustApp, admindb;
+  Classes, SysUtils, CustApp, convutils, sqldb, admindb, LConvEncoding;
   { you can add units after this }
 
 type
@@ -24,21 +24,63 @@ type
 
 { aduana }
 
-procedure aplicacion(cod_aduana:String;ano_pre:String;cod_regi:String;num_dua:String;tipo_doc:String;html:String);
+function lector_html(archivo:String):TStrings;
 var
-  query:String;
-  fecha_creacion,fecha_actualizacion:String;
+  //contenido_html:String;
+  contenido_html:TStrings;
+  linea:String;
+  lector:TextFile;
+
 
 begin
-  fecha_creacion:=FormatDateTime('DD-MMM-YYYY',Now);
-  fecha_actualizacion:=fecha_creacion;
+  try
+     contenido_html:=TStringList.Create();
+     contenido_html.LoadFromFile(archivo);
+     Result:=contenido_html;
+  finally
+  end;
 
-  query:='INSERT INTO ORDEN_SEMAFORO_WEB(EMPRESA,ANO_PRESE,CODI_ADUAN,CODI_REGI,';
-  query:=query+'NUM_ORDEN,NUM_DUA,EST_INTRUSIVO,CONTEN_WEB,FECHA_CREACION,FECHA_ACTUAL) VALUES (';
-  query:=query+'''001'', '''+ano_pre+''', '''+cod_aduana+''', '''+cod_regi+''', ''';
-  query:=query+num_dua+''', '''+num_dua+''', 0, ''Hola'', '''+fecha_creacion+''', '''+fecha_actualizacion+''')';
-  WriteLn(query);
-  admindb.ejecuta_query(query);
+end;
+
+function lector2_html(archivo:String):String;
+var
+  linea:String;
+  contenido_archivo:TextFile;
+  contenido_final:String;
+
+begin
+  AssignFile(contenido_archivo,archivo);
+  Reset(contenido_archivo);
+
+  while not eof(contenido_archivo) do
+  begin
+    ReadLn(contenido_archivo,linea);
+    if linea<>'' then
+    begin
+      contenido_final:=contenido_final+linea;
+      //contenido_final:=UTF8Encode(contenido_final);
+      //contenido_final:=CP1252ToUTF8(contenido_final);
+      WriteLn(contenido_final);
+      ReadLn();
+    end;
+  end;
+  CloseFile(contenido_archivo);
+
+  Result:=contenido_final;
+end;
+
+procedure aplicacion(cod_aduana,ano_pre,cod_regi,num_dua,tipo_doc,html:String);
+var
+  query:String;
+  contenido_html:TStrings;
+  contenido2_html:String;
+
+begin
+  contenido_html:=lector_html(html);
+  //contenido2_html:=lector2_html(html);
+  //Halt;
+  admindb.ejecuta_insert(cod_aduana,ano_pre,cod_regi,num_dua,tipo_doc,contenido_html);
+  //WriteLn(query);
 end;
 
 procedure aduana.DoRun;
@@ -79,8 +121,9 @@ begin
   num_dua:=ParamStr(4);
   tipo_doc:=ParamStr(5);
   archivo_html:=ParamStr(6);
+
   {
-  //WriteLn(ParamStr(0));
+  WriteLn(ParamStr(0));
   WriteLn(ParamStr(1));
   WriteLn(ParamStr(2));
   WriteLn(ParamStr(3));
@@ -88,6 +131,7 @@ begin
   WriteLn(ParamStr(5));
   WriteLn(ParamStr(6));
   }
+
   if FileExists(archivo_html) then
   begin
     WriteLn('Excelente');

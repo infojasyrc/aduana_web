@@ -3,140 +3,191 @@
   <ProjectSession>
     <Version Value="9"/>
     <BuildModes Active="Default"/>
-    <Units Count="4">
+    <Units Count="5">
       <Unit0>
         <Filename Value="projectaduana.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="projectaduana"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="20"/>
-        <CursorPos X="32" Y="41"/>
-        <UsageCount Value="20"/>
+        <TopLine Value="68"/>
+        <CursorPos X="25" Y="82"/>
+        <UsageCount Value="38"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
+        <Filename Value="admindb.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="admindb"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="122"/>
+        <CursorPos X="1" Y="190"/>
+        <UsageCount Value="38"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
         <Filename Value="src/dbadmin.pas"/>
         <UnitName Value="dbadmin"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="19" Y="8"/>
-        <UsageCount Value="20"/>
-      </Unit1>
-      <Unit2>
+        <UsageCount Value="18"/>
+      </Unit2>
+      <Unit3>
         <Filename Value="dbadmin.pas"/>
         <UnitName Value="dbadmin"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="21" Y="8"/>
-        <UsageCount Value="20"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="admindb.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="admindb"/>
-        <EditorIndex Value="1"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="92"/>
-        <CursorPos X="53" Y="112"/>
-        <UsageCount Value="20"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="18"/>
       </Unit3>
+      <Unit4>
+        <Filename Value="/usr/lib/codetyphon/typhon/components/lazutils/lconvencoding.pas"/>
+        <UnitName Value="LConvEncoding"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="34" Y="21"/>
+        <UsageCount Value="9"/>
+      </Unit4>
     </Units>
     <General>
       <ActiveWindowIndexAtStart Value="0"/>
     </General>
-    <JumpHistory Count="22" HistoryIndex="21">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="projectaduana.lpr"/>
-        <Caret Line="9" Column="29" TopLine="1"/>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="186" Column="1" TopLine="168"/>
       </Position1>
       <Position2>
-        <Filename Value="projectaduana.lpr"/>
-        <Caret Line="11" Column="11" TopLine="1"/>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="187" Column="1" TopLine="168"/>
       </Position2>
       <Position3>
-        <Filename Value="projectaduana.lpr"/>
-        <Caret Line="9" Column="25" TopLine="1"/>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="188" Column="1" TopLine="168"/>
       </Position3>
       <Position4>
         <Filename Value="projectaduana.lpr"/>
-        <Caret Line="10" Column="35" TopLine="1"/>
+        <Caret Line="75" Column="39" TopLine="58"/>
       </Position4>
       <Position5>
-        <Filename Value="admindb.pas"/>
-        <Caret Line="11" Column="41" TopLine="70"/>
+        <Filename Value="projectaduana.lpr"/>
+        <Caret Line="62" Column="26" TopLine="48"/>
       </Position5>
       <Position6>
-        <Filename Value="admindb.pas"/>
-        <Caret Line="65" Column="39" TopLine="52"/>
+        <Filename Value="projectaduana.lpr"/>
+        <Caret Line="9" Column="76" TopLine="1"/>
       </Position6>
       <Position7>
         <Filename Value="admindb.pas"/>
-        <Caret Line="69" Column="36" TopLine="58"/>
+        <Caret Line="13" Column="73" TopLine="173"/>
       </Position7>
       <Position8>
         <Filename Value="admindb.pas"/>
-        <Caret Line="12" Column="48" TopLine="90"/>
+        <Caret Line="177" Column="1" TopLine="173"/>
       </Position8>
       <Position9>
-        <Filename Value="projectaduana.lpr"/>
-        <Caret Line="29" Column="16" TopLine="20"/>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="179" Column="1" TopLine="173"/>
       </Position9>
       <Position10>
-        <Filename Value="projectaduana.lpr"/>
-        <Caret Line="27" Column="102" TopLine="14"/>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="180" Column="1" TopLine="173"/>
       </Position10>
       <Position11>
-        <Filename Value="projectaduana.lpr"/>
-        <Caret Line="76" Column="75" TopLine="57"/>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="181" Column="1" TopLine="173"/>
       </Position11>
       <Position12>
-        <Filename Value="projectaduana.lpr"/>
-        <Caret Line="39" Column="50" TopLine="31"/>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="182" Column="1" TopLine="173"/>
       </Position12>
       <Position13>
-        <Filename Value="projectaduana.lpr"/>
-        <Caret Line="35" Column="48" TopLine="25"/>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="183" Column="1" TopLine="173"/>
       </Position13>
       <Position14>
-        <Filename Value="projectaduana.lpr"/>
-        <Caret Line="34" Column="37" TopLine="21"/>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="184" Column="1" TopLine="173"/>
       </Position14>
       <Position15>
-        <Filename Value="projectaduana.lpr"/>
-        <Caret Line="93" Column="3" TopLine="22"/>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="185" Column="1" TopLine="173"/>
       </Position15>
       <Position16>
-        <Filename Value="projectaduana.lpr"/>
-        <Caret Line="37" Column="29" TopLine="22"/>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="186" Column="1" TopLine="173"/>
       </Position16>
       <Position17>
-        <Filename Value="projectaduana.lpr"/>
-        <Caret Line="35" Column="72" TopLine="22"/>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="187" Column="1" TopLine="173"/>
       </Position17>
       <Position18>
-        <Filename Value="projectaduana.lpr"/>
-        <Caret Line="32" Column="43" TopLine="19"/>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="188" Column="1" TopLine="173"/>
       </Position18>
       <Position19>
-        <Filename Value="projectaduana.lpr"/>
-        <Caret Line="39" Column="110" TopLine="19"/>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="190" Column="1" TopLine="173"/>
       </Position19>
       <Position20>
-        <Filename Value="projectaduana.lpr"/>
-        <Caret Line="34" Column="40" TopLine="20"/>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="177" Column="1" TopLine="172"/>
       </Position20>
       <Position21>
-        <Filename Value="projectaduana.lpr"/>
-        <Caret Line="33" Column="49" TopLine="20"/>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="179" Column="1" TopLine="172"/>
       </Position21>
       <Position22>
-        <Filename Value="projectaduana.lpr"/>
-        <Caret Line="34" Column="24" TopLine="20"/>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="180" Column="1" TopLine="172"/>
       </Position22>
+      <Position23>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="181" Column="1" TopLine="172"/>
+      </Position23>
+      <Position24>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="182" Column="1" TopLine="172"/>
+      </Position24>
+      <Position25>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="183" Column="1" TopLine="172"/>
+      </Position25>
+      <Position26>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="184" Column="1" TopLine="172"/>
+      </Position26>
+      <Position27>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="185" Column="1" TopLine="172"/>
+      </Position27>
+      <Position28>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="186" Column="1" TopLine="172"/>
+      </Position28>
+      <Position29>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="187" Column="1" TopLine="172"/>
+      </Position29>
+      <Position30>
+        <Filename Value="admindb.pas"/>
+        <Caret Line="188" Column="1" TopLine="172"/>
+      </Position30>
     </JumpHistory>
   </ProjectSession>
+  <Debugging>
+    <BreakPoints Count="1">
+      <Item1>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="admindb.pas"/>
+        <Line Value="177"/>
+      </Item1>
+    </BreakPoints>
+  </Debugging>
   <EditorMacros Count="0"/>
 </CONFIG>
