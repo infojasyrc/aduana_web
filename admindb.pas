@@ -5,12 +5,12 @@ unit admindb;
 interface
 
 uses
-  Classes, SysUtils, oracleconnection, sqldb, IniFiles;
+  Classes, SysUtils, oracleconnection, sqldb, IniFiles, ZConnection, ZDataset,db;
+  //Classes, SysUtils, oracleconnection, sqldb, IniFiles;
   function obtiene_archivo_ini():String;
   function lector_ini():TStringList;
-  function conexion():TOracleConnection;
-  procedure ejecuta_query(string_query:TSQLQuery);
-  procedure ejecuta_insert(cod_aduana,ano_pre,cod_regi,num_dua,tipo_doc:String;contenido:TStrings);
+  function conexion():TZConnection;
+  procedure otro_insert(cod_aduana,ano_pre,cod_regi,num_dua,tipo_doc:String;contenido:TStrings);
 
 implementation
 
@@ -28,7 +28,7 @@ function lector_ini():TStringList;
 var
   parameters_conexion: TStringList;
   hostname,databasename,username,password: String;
-  config_file: String;
+  config_file,port,protocol: String;
   Ini:TIniFile;
 
 begin
@@ -41,6 +41,8 @@ begin
      databasename:=Ini.ReadString('db','database','');
      username:=Ini.ReadString('db','username','');
      password:=Ini.ReadString('db','password','');
+     port:=Ini.ReadString('db','port','');
+     protocol:=Ini.ReadString('db','protocol','');
 
      Ini.Free;
 
@@ -58,30 +60,36 @@ begin
   parameters_conexion.Add(databasename);
   parameters_conexion.Add(username);
   parameters_conexion.Add(password);
+  parameters_conexion.Add(port);
+  parameters_conexion.Add(protocol);
 
   result:=parameters_conexion;
 end;
 
 // Genera la conexion a la base de datos
-function conexion():TOracleConnection;
+function conexion():TZConnection;
 var
   // Crea una conexion
-  conexion_oracle: TOracleConnection;
+  conexion_oracle: TZConnection;
   parameters_conexion: TStringList;
 
 begin
   parameters_conexion:=lector_ini();
 
-  conexion_oracle:=TOracleConnection.Create(nil);
+  conexion_oracle:=TZConnection.Create(nil);
 
   conexion_oracle.HostName:=parameters_conexion[0];
-  conexion_oracle.DatabaseName:=parameters_conexion[1];
-  conexion_oracle.UserName:=parameters_conexion[2];
+  conexion_oracle.Database:=parameters_conexion[1];
+  conexion_oracle.User:=parameters_conexion[2];
   conexion_oracle.Password:=parameters_conexion[3];
+  conexion_oracle.Port:=StrtoInt(parameters_conexion[4]);
+  conexion_oracle.Protocol:=parameters_conexion[5];
+  conexion_oracle.AutoCommit:=False;
+
+  conexion_oracle.Connected:=True;
 
   try
      conexion_oracle.Connected:=True;
-     //WriteLn('Conexion satisfactoria a SIG');
      result:=conexion_oracle;
   except on e: Exception do
   begin
@@ -94,110 +102,62 @@ begin
 end;
 
 // Ejecuta la sentencia
-procedure ejecuta_query(string_query:TSQLQuery);
+procedure otro_insert(cod_aduana,ano_pre,cod_regi,num_dua,tipo_doc:String;contenido:TStrings);
 var
   // Crea una conexion
-  conexion_oracle: TOracleConnection;
-  query_oracle: TSQLQuery;
-  transaction_oracle: TSQLTransaction;
+  conexion_oracle: TZConnection;
+  query_oracle: TZQuery;
+  query,query_select,query_update:String;
+  parameters_conexion:TStringList;
+  tiempo_actual:TDateTime;
 
 begin
 
-  try
-     conexion_oracle:=conexion();
-     //WriteLn('Conexion satisfactoria a SIG');
-
-     transaction_oracle:=TSQLTransaction.Create(nil);
-     query_oracle:=TSQLQuery.create(nil);
-     query_oracle:=string_query;
-
-     conexion_oracle.Transaction:=transaction_oracle;
-     transaction_oracle.DataBase:=conexion_oracle;
-     query_oracle.DataBase:=conexion_oracle;
-     query_oracle.Transaction:=transaction_oracle;
-
-     transaction_oracle.StartTransaction;
-
-     query_oracle.SQL.Clear;
-     //query_oracle.SQL:= string_query.SQL;
-     query_oracle.ExecSQL;
-     query_oracle.SQL.Clear;
-
-     transaction_oracle.Commit;
-     transaction_oracle.Free;
-
-     query_oracle.Close;
-     query_oracle.Free;
-
-     conexion_oracle.Close;
-     conexion_oracle.Free;
-
-  except on e: Exception do
-  begin
-    WriteLn('Error al realizar la conexion a la Base de Datos: ',e.Message);
-    WriteLn(e.Message);
-    Exit;
-  end;
-  end;
-end;
-
-// Ejecuta la sentencia
-procedure ejecuta_insert(cod_aduana,ano_pre,cod_regi,num_dua,tipo_doc:String;contenido:TStrings);
-var
-  // Crea una conexion
-  conexion_oracle: TOracleConnection;
-  query_oracle: TSQLQuery;
-  transaction_oracle: TSQLTransaction;
-  query:String;
-
-begin
+  query_select:='SELECT * WHERE EMPRESA=:EMPRESA AND ANO_PRESE=:ANO_PRESE';
+  query_select:=query_select+' AND CODI_ADUAN=:CODI_ADUAN AND CODI_REGI=:CODI_REGI';
+  query_select:=query_select+' AND NUM_ORDEN=:NUM_ORDEN';
 
   query:='INSERT INTO ORDEN_SEMAFORO_WEB(EMPRESA,ANO_PRESE,CODI_ADUAN,CODI_REGI,NUM_ORDEN,';
-  query:=query+'NUM_DUA,EST_INTRUSIVO,CONTEN_WEB,FECHA_CREACION,FECHA_ACTUAL) VALUES (';
+  query:=query+'NUM_DUA,EST_INTRUSIVO,FECHA_CREACION,FECHA_ACTUAL,CONTENIDO_WEB) VALUES (';
   query:=query+':EMPRESA,:ANO_PRESE,:CODI_ADUAN,:CODI_REGI,:NUM_ORDEN,:NUM_DUA,';
-  query:=query+':EST_INTRUSIVO,:CONTEN_WEB,:FECHA_CREACION,:FECHA_ACTUAL);';
+  query:=query+':EST_INTRUSIVO,:FECHA_CREACION,:FECHA_ACTUAL,:CONTENIDO)';
+
+  query_update:='UPDATE ORDEN_SEMAFORO_WEB SET CONTENIDO=:CONTENIDO WHERE';
+  query_update:=query_update+' EMPRESA=:EMPRESA AND ANO_PRESE=:ANO_PRESE';
+  query_update:=query_update+' AND CODI_ADUAN=:CODI_ADUAN AND CODI_REGI=:CODI_REGI';
+  query_update:=query_update+' AND NUM_ORDEN=:NUM_ORDEN';
+
+  tiempo_actual:=Now;
 
   try
+     parameters_conexion:=lector_ini();
+
      conexion_oracle:=conexion();
-     //WriteLn('Conexion satisfactoria a SIG');
+     query_oracle:=TZQuery.create(nil);
 
-     transaction_oracle:=TSQLTransaction.Create(nil);
-     query_oracle:=TSQLQuery.create(nil);
+     query_oracle.Connection:=conexion_oracle;
 
-     conexion_oracle.Transaction:=transaction_oracle;
-     transaction_oracle.DataBase:=conexion_oracle;
-     query_oracle.DataBase:=conexion_oracle;
-     query_oracle.Transaction:=transaction_oracle;
+     query_oracle.SQL.Clear;
+     query_oracle.SQL.Add(query);
 
-     transaction_oracle.StartTransaction;
+     query_oracle.ParamByName('EMPRESA').AsString:='001';
+     query_oracle.ParamByName('ANO_PRESE').AsString:=ano_pre;
+     query_oracle.ParamByName('CODI_ADUAN').AsString:=cod_aduana;
+     query_oracle.ParamByName('CODI_REGI').AsString:=cod_regi;
+     query_oracle.ParamByName('NUM_ORDEN').AsString:=num_dua;
+     query_oracle.ParamByName('NUM_DUA').AsString:=num_dua;
+     query_oracle.ParamByName('EST_INTRUSIVO').AsInteger:=0;
+     query_oracle.ParamByName('FECHA_CREACION').AsDate:=tiempo_actual;
+     query_oracle.ParamByName('FECHA_ACTUAL').AsDate:=tiempo_actual;
+     query_oracle.ParamByName('CONTENIDO').AsBlob:=contenido.Text;
 
-     //query_oracle.SQL.Clear;
-     query_oracle.SQL.Text:=query;
-
-     WriteLn(contenido.Text);
-
-     query_oracle.Params.ParamByName('EMPRESA').AsString:='001';
-     query_oracle.Params.ParamByName('ANO_PRESE').AsString:=ano_pre;
-     query_oracle.Params.ParamByName('CODI_ADUAN').AsString:=cod_aduana;
-     query_oracle.Params.ParamByName('CODI_REGI').AsString:=cod_regi;
-     query_oracle.Params.ParamByName('NUM_ORDEN').AsString:=num_dua;
-     query_oracle.Params.ParamByName('NUM_DUA').AsString:=num_dua;
-     query_oracle.Params.ParamByName('EST_INTRUSIVO').AsString:='0';
-     query_oracle.Params.ParamByName('CONTEN_WEB').AsString:=contenido.Text;
-     query_oracle.Params.ParamByName('FECHA_CREACION').AsDate:=Now;
-     query_oracle.Params.ParamByName('FECHA_ACTUAL').AsDate:=Now;
+     query_oracle.Prepare;
 
      query_oracle.ExecSQL;
-     //query_oracle.SQL.Clear;
-
-     transaction_oracle.Commit;
-     transaction_oracle.Free;
 
      query_oracle.Close;
-     query_oracle.Free;
 
-     conexion_oracle.Close;
-     conexion_oracle.Free;
+     conexion_oracle.Commit;
 
   except on e: Exception do
   begin

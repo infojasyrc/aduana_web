@@ -106,10 +106,10 @@ class Aduana(object):
             
             if os.path.exists(webpage):
                 os.remove(webpage)
-            
+            '''
             if os.path.exists(os.path.join(self.cookies_folder, "ol-ad-ao")):
                 os.removedirs(os.path.join(self.cookies_folder, "ol-ad-ao"))
-        
+            '''
         except IOError:
             print "Error"
     
@@ -147,13 +147,13 @@ class Aduana(object):
         return command
     
     def save_data(self):
-        final_html = os.path.join(self.cookies_folder,"LevanteDuaServlet")
+        final_name = os.path.join(self.final_folder,"final_"+self.filename+".html")
         
         launcher = os.path.join(self.bin_folder,"projectaduana")
         
         command = '%s "%s" "%s" "%s" "%s" "%s" "%s"' % (launcher, self.cod_aduana, self.ano_prese,
                                                         self.cod_registro, self.num_dua, 
-                                                        self.tipo_doc, final_html)
+                                                        self.tipo_doc, final_name)
         
         return command
     
@@ -216,10 +216,10 @@ class Aduana(object):
                         if self.check_successfull_captcha(dict_final_result["message"]):
                             self.move_final_destination()
                             self.read_html()
-                            #final_cmmd = self.save_data()
-                            #obj_command.execute_command(final_cmmd)
-                            #dict_save = obj_command.get_final_result()
-                            #print dict_save["message"] 
+                            final_cmmd = self.save_data()
+                            obj_command.execute_command(final_cmmd)
+                            dict_save = obj_command.get_final_result()
+                            print dict_save["message"] 
                             break
                         else:
                             print dict_final_result["message"]
@@ -242,8 +242,8 @@ class Aduana(object):
 if __name__ == '__main__':
     cod_aduana = "118"
     ano_prese = "2013"
-    cod_registro = "10"
-    num_dua = "548164"
+    cod_registro = "11"
+    num_dua = "548163"
     tipo_doc = "01"
     
     aduana = Aduana()

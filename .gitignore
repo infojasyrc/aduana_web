@@ -5,3 +5,7 @@
 *.txt
 *.pydevproject
 *.project
+*.html
+captcha/
+cookies/
+final/

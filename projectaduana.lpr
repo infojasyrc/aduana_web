@@ -6,7 +6,8 @@ uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
   cthreads,
   {$ENDIF}{$ENDIF}
-  Classes, SysUtils, CustApp, convutils, sqldb, admindb, LConvEncoding;
+  Classes, SysUtils, CustApp, convutils, sqldb, admindb, LConvEncoding, Interfaces,
+  pl_zeosdbo;
   { you can add units after this }
 
 type
@@ -28,11 +29,9 @@ function lector_html(archivo:String):TStrings;
 var
   //contenido_html:String;
   contenido_html:TStrings;
-  linea:String;
-  lector:TextFile;
-
 
 begin
+
   try
      contenido_html:=TStringList.Create();
      contenido_html.LoadFromFile(archivo);
@@ -49,6 +48,7 @@ var
   contenido_final:String;
 
 begin
+  contenido_final:='';
   AssignFile(contenido_archivo,archivo);
   Reset(contenido_archivo);
 
@@ -58,10 +58,6 @@ begin
     if linea<>'' then
     begin
       contenido_final:=contenido_final+linea;
-      //contenido_final:=UTF8Encode(contenido_final);
-      //contenido_final:=CP1252ToUTF8(contenido_final);
-      WriteLn(contenido_final);
-      ReadLn();
     end;
   end;
   CloseFile(contenido_archivo);
@@ -71,16 +67,13 @@ end;
 
 procedure aplicacion(cod_aduana,ano_pre,cod_regi,num_dua,tipo_doc,html:String);
 var
-  query:String;
   contenido_html:TStrings;
-  contenido2_html:String;
 
 begin
   contenido_html:=lector_html(html);
-  //contenido2_html:=lector2_html(html);
-  //Halt;
-  admindb.ejecuta_insert(cod_aduana,ano_pre,cod_regi,num_dua,tipo_doc,contenido_html);
-  //WriteLn(query);
+
+  admindb.otro_insert(cod_aduana,ano_pre,cod_regi,num_dua,tipo_doc,contenido_html);
+
 end;
 
 procedure aduana.DoRun;
@@ -134,12 +127,12 @@ begin
 
   if FileExists(archivo_html) then
   begin
-    WriteLn('Excelente');
+    //WriteLn('Excelente');
     aplicacion(cod_aduana,ano_prese,cod_regi,num_dua,tipo_doc,archivo_html);
   end;
 
   // stop program loop
-  ReadLn();
+  //ReadLn();
   Terminate;
 end;
 
