@@ -107,25 +107,17 @@ var
   // Crea una conexion
   conexion_oracle: TZConnection;
   query_oracle: TZQuery;
-  query,query_select,query_update:String;
+  query_insert,query_select,query_update:String;
   parameters_conexion:TStringList;
   tiempo_actual:TDateTime;
+  rows_affected:Integer;
 
 begin
 
-  query_select:='SELECT * WHERE EMPRESA=:EMPRESA AND ANO_PRESE=:ANO_PRESE';
+  query_select:='SELECT COUNT(*) CONTADOR FROM ORDEN_SEMAFORO_WEB WHERE';
+  query_select:=query_select+' EMPRESA=:EMPRESA AND ANO_PRESE=:ANO_PRESE';
   query_select:=query_select+' AND CODI_ADUAN=:CODI_ADUAN AND CODI_REGI=:CODI_REGI';
   query_select:=query_select+' AND NUM_ORDEN=:NUM_ORDEN';
-
-  query:='INSERT INTO ORDEN_SEMAFORO_WEB(EMPRESA,ANO_PRESE,CODI_ADUAN,CODI_REGI,NUM_ORDEN,';
-  query:=query+'NUM_DUA,EST_INTRUSIVO,FECHA_CREACION,FECHA_ACTUAL,CONTENIDO_WEB) VALUES (';
-  query:=query+':EMPRESA,:ANO_PRESE,:CODI_ADUAN,:CODI_REGI,:NUM_ORDEN,:NUM_DUA,';
-  query:=query+':EST_INTRUSIVO,:FECHA_CREACION,:FECHA_ACTUAL,:CONTENIDO)';
-
-  query_update:='UPDATE ORDEN_SEMAFORO_WEB SET CONTENIDO=:CONTENIDO WHERE';
-  query_update:=query_update+' EMPRESA=:EMPRESA AND ANO_PRESE=:ANO_PRESE';
-  query_update:=query_update+' AND CODI_ADUAN=:CODI_ADUAN AND CODI_REGI=:CODI_REGI';
-  query_update:=query_update+' AND NUM_ORDEN=:NUM_ORDEN';
 
   tiempo_actual:=Now;
 
@@ -138,23 +130,64 @@ begin
      query_oracle.Connection:=conexion_oracle;
 
      query_oracle.SQL.Clear;
-     query_oracle.SQL.Add(query);
 
+     query_oracle.SQL.Add(query_select);
      query_oracle.ParamByName('EMPRESA').AsString:='001';
      query_oracle.ParamByName('ANO_PRESE').AsString:=ano_pre;
      query_oracle.ParamByName('CODI_ADUAN').AsString:=cod_aduana;
      query_oracle.ParamByName('CODI_REGI').AsString:=cod_regi;
      query_oracle.ParamByName('NUM_ORDEN').AsString:=num_dua;
-     query_oracle.ParamByName('NUM_DUA').AsString:=num_dua;
-     query_oracle.ParamByName('EST_INTRUSIVO').AsInteger:=0;
-     query_oracle.ParamByName('FECHA_CREACION').AsDate:=tiempo_actual;
-     query_oracle.ParamByName('FECHA_ACTUAL').AsDate:=tiempo_actual;
-     query_oracle.ParamByName('CONTENIDO').AsBlob:=contenido.Text;
 
      query_oracle.Prepare;
 
-     query_oracle.ExecSQL;
+     query_oracle.Open;
+     rows_affected:=query_oracle.FieldByName('CONTADOR').AsInteger;
+     WriteLn(rows_affected);
+     query_oracle.Close;
 
+     if (rows_affected = 0) then
+     begin
+
+       query_insert:='INSERT INTO ORDEN_SEMAFORO_WEB (EMPRESA,ANO_PRESE,CODI_ADUAN,CODI_REGI,NUM_ORDEN,';
+       query_insert:=query_insert+'NUM_DUA,EST_INTRUSIVO,FECHA_CREACION,FECHA_ACTUAL,CONTENIDO_WEB) VALUES (';
+       query_insert:=query_insert+':EMPRESA,:ANO_PRESE,:CODI_ADUAN,:CODI_REGI,:NUM_ORDEN,:NUM_DUA,';
+       query_insert:=query_insert+':EST_INTRUSIVO,:FECHA_CREACION,:FECHA_ACTUAL,:CONTENIDO)';
+
+       query_oracle.SQL.Clear;
+       query_oracle.SQL.Add(query_insert);
+       query_oracle.ParamByName('EMPRESA').AsString:='001';
+       query_oracle.ParamByName('ANO_PRESE').AsString:=ano_pre;
+       query_oracle.ParamByName('CODI_ADUAN').AsString:=cod_aduana;
+       query_oracle.ParamByName('CODI_REGI').AsString:=cod_regi;
+       query_oracle.ParamByName('NUM_ORDEN').AsString:=num_dua;
+       query_oracle.ParamByName('NUM_DUA').AsString:=num_dua;
+       query_oracle.ParamByName('EST_INTRUSIVO').AsInteger:=0;
+       query_oracle.ParamByName('FECHA_CREACION').AsDate:=tiempo_actual;
+       query_oracle.ParamByName('FECHA_ACTUAL').AsDate:=tiempo_actual;
+       query_oracle.ParamByName('CONTENIDO').AsBlob:=contenido.Text;
+     end
+     else
+     begin
+
+       query_update:='UPDATE ORDEN_SEMAFORO_WEB SET CONTENIDO_WEB=:CONTENIDO, FECHA_ACTUAL=:FECHA_ACTUAL WHERE';
+       query_update:=query_update+' EMPRESA=:EMPRESA AND ANO_PRESE=:ANO_PRESE';
+       query_update:=query_update+' AND CODI_ADUAN=:CODI_ADUAN AND CODI_REGI=:CODI_REGI';
+       query_update:=query_update+' AND NUM_ORDEN=:NUM_ORDEN';
+
+       query_oracle.SQL.Clear;
+       query_oracle.SQL.Add(query_update);
+       query_oracle.ParamByName('EMPRESA').AsString:='001';
+       query_oracle.ParamByName('ANO_PRESE').AsString:=ano_pre;
+       query_oracle.ParamByName('CODI_ADUAN').AsString:=cod_aduana;
+       query_oracle.ParamByName('CODI_REGI').AsString:=cod_regi;
+       query_oracle.ParamByName('NUM_ORDEN').AsString:=num_dua;
+       //query_oracle.ParamByName('EST_INTRUSIVO').AsInteger:=0;
+       query_oracle.ParamByName('FECHA_ACTUAL').AsDate:=tiempo_actual;
+       query_oracle.ParamByName('CONTENIDO').AsBlob:=contenido.Text;
+     end;
+
+     query_oracle.Prepare;
+     query_oracle.ExecSQL;
      query_oracle.Close;
 
      conexion_oracle.Commit;
