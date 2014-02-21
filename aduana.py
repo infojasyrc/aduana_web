@@ -34,7 +34,7 @@ class Aduana(object):
         self.src_html = ""
         self.final_html = ""
     
-    def set_parameters(self, cod_aduana, ano_prese, cod_registro, num_dua, tipo_doc):
+    def set_parameters(self, cod_aduana, ano_prese, cod_registro, num_orden, tipo_doc):
         number = random.randint(0,5)
         realtime = datetime.now().strftime("%Y%m%d%H%M%S")
         filename = "%s_%d" % (realtime, number)
@@ -43,7 +43,7 @@ class Aduana(object):
         self.cod_aduana = cod_aduana
         self.ano_prese = ano_prese
         self.cod_registro = cod_registro
-        self.num_dua = num_dua
+        self.num_orden = num_orden
         self.tipo_doc = tipo_doc
         self.cookie_file = os.path.join(self.cookies_folder, filename+".txt")
         
@@ -96,10 +96,14 @@ class Aduana(object):
             os.remove(self.cookie_file)
             txt_file = os.path.join(self.captcha_folder,self.filename+".txt")
             img_file = os.path.join(self.captcha_folder,self.filename+".jpeg")
-            os.remove(txt_file)
-            os.remove(img_file)
             
-            if image_file != "":
+            if os.path.exists(txt_file):
+                os.remove(txt_file)
+            
+            if os.path.exists(img_file):
+                os.remove(img_file)
+            
+            if image_file != "" and os.path.exists(image_file):
                 os.remove(image_file)
             
             webpage = os.path.join(self.cookies_folder,"LevanteDuaServlet")
@@ -128,7 +132,7 @@ class Aduana(object):
         parameter_cod_aduana = 'codi_aduan=%s' % self.cod_aduana
         parameter_ano_prese = 'ano_prese=%s' % self.ano_prese
         parameter_cod_registro = 'codi_regi=%s' % self.cod_registro
-        parameter_correlativo = 'nume_corre=%s' % self.num_dua
+        parameter_correlativo = 'nume_corre=%s' % self.num_orden
         parameter_tipo_doc = 'tipo_doc=%s' % self.tipo_doc
         parameter_captcha = 'codigo=%s' % captcha
         
@@ -152,7 +156,7 @@ class Aduana(object):
         launcher = os.path.join(self.bin_folder,"projectaduana")
         
         command = '%s "%s" "%s" "%s" "%s" "%s" "%s"' % (launcher, self.cod_aduana, self.ano_prese,
-                                                        self.cod_registro, self.num_dua, 
+                                                        self.cod_registro, self.num_orden, 
                                                         self.tipo_doc, final_name)
         
         return command
@@ -206,7 +210,7 @@ class Aduana(object):
                 captcha = self.get_captcha(image_file)
                 print captcha
                 
-                if len(captcha) > 2:
+                if len(captcha) > 2 and len(captcha) <= 4:
                     command = self.set_command(captcha)
                 
                     obj_command.execute_command(command)
@@ -241,13 +245,13 @@ class Aduana(object):
 
 if __name__ == '__main__':
     cod_aduana = "118"
-    ano_prese = "2013"
-    cod_registro = "11"
-    num_dua = "548163"
+    ano_prese = "2014"
+    cod_registro = "10"
+    num_orden = "052242"
     tipo_doc = "01"
     
     aduana = Aduana()
-    aduana.set_parameters(cod_aduana, ano_prese, cod_registro, num_dua, tipo_doc)
+    aduana.set_parameters(cod_aduana, ano_prese, cod_registro, num_orden, tipo_doc)
     aduana.execute()
     aduana.clean_data()
     

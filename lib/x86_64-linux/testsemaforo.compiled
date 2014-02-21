@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Compiler Value="/usr/lib/codetyphon/fpc/bin/x86_64-linux/fpc" Date="1391437155"/>
+  <Params Value=" -MObjFPC -Scghi -O1 -g -gl -vewnhi -Fi/home/dev/workspace/aduana-captcha/lib/x86_64-linux -Fl/opt/gnome/lib -Fu/usr/lib/codetyphon/typhon/components/pl_ZeosDBO/lib/x86_64-linux/gtk2 -Fu/usr/lib/codetyphon/typhon/components/ideintf/units/x86_64-linux/gtk2 -Fu/usr/lib/codetyphon/typhon/components/lazcontrols/lib/x86_64-linux/gtk2 -Fu/usr/lib/codetyphon/typhon/lcl/units/x86_64-linux/gtk2 -Fu/usr/lib/codetyphon/typhon/lcl/units/x86_64-linux -Fu/usr/lib/codetyphon/typhon/components/lazutils/lib/x86_64-linux -Fu/usr/lib/codetyphon/typhon/packager/units/x86_64-linux -Fu/home/dev/workspace/aduana-captcha/ -FU/home/dev/workspace/aduana-captcha/lib/x86_64-linux/ -l -FE/home/dev/workspace/aduana-captcha/bin/ -dLCL -dLCLgtk2 testsemaforo.lpr"/>
+</CONFIG>

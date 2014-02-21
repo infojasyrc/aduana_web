@@ -6,12 +6,13 @@ Created on Feb 13, 2014
 
 import socket
 from captcha import Captcha
+from aduana import Aduana
 
 
 class Gossip(object):
     
     def __init__(self):
-        pass
+        self.tipo_doc = "01"
     
     def trigger(self):
         s = socket.socket()        
@@ -23,19 +24,32 @@ class Gossip(object):
                        
         while True:
             c, addr = s.accept()
-            #data=c.recv(1024)    
-            #print ('Address:',addr,'Data:',data)
+            data=c.recv(1024)    
+            print ('Address:',addr,'Data:',data)
            
-            '''
             mylist=list(data.split(':'))
+            '''
             intlist=list()
             for i in range(0,len(mylist)):
                 intlist.append(int(mylist[i]))
             
             intlist.sort()
             '''
-            c.send(self.getCaptcha())
+            cod_aduana = mylist[0].strip()
+            num_orden = mylist[1].strip()
+            cod_regi = mylist[2].strip()
+            ano_prese = mylist[3].strip()
+            
+            self.set_information(cod_aduana, num_orden, cod_regi, ano_prese)
+            
+            c.send("")
             c.close()
+    
+    def set_information(self, cod_aduana, num_orden, cod_regi, ano_prese):
+        aduana = Aduana()
+        aduana.set_parameters(cod_aduana, ano_prese, cod_regi, num_orden, self.tipo_doc)
+        aduana.execute()
+        aduana.clean_data()
     
     def getCaptcha(self):
         obj_captcha = Captcha()
