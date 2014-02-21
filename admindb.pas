@@ -10,7 +10,7 @@ uses
   function obtiene_archivo_ini():String;
   function lector_ini():TStringList;
   function conexion():TZConnection;
-  procedure otro_insert(cod_aduana,ano_pre,cod_regi,num_dua,tipo_doc:String;contenido:TStrings);
+  procedure otro_insert(cod_aduana,ano_pre,cod_regi,num_dua,num_orden,tipo_doc:String;contenido:TStrings);
 
 implementation
 
@@ -102,7 +102,7 @@ begin
 end;
 
 // Ejecuta la sentencia
-procedure otro_insert(cod_aduana,ano_pre,cod_regi,num_dua,tipo_doc:String;contenido:TStrings);
+procedure otro_insert(cod_aduana,ano_pre,cod_regi,num_dua,num_orden,tipo_doc:String;contenido:TStrings);
 var
   // Crea una conexion
   conexion_oracle: TZConnection;
@@ -117,7 +117,7 @@ begin
   query_select:='SELECT COUNT(*) CONTADOR FROM ORDEN_SEMAFORO_WEB WHERE';
   query_select:=query_select+' EMPRESA=:EMPRESA AND ANO_PRESE=:ANO_PRESE';
   query_select:=query_select+' AND CODI_ADUAN=:CODI_ADUAN AND CODI_REGI=:CODI_REGI';
-  query_select:=query_select+' AND NUM_ORDEN=:NUM_ORDEN';
+  query_select:=query_select+' AND NUME_ORDEN=:NUME_ORDEN AND NUM_DUA=:NUM_DUA';
 
   tiempo_actual:=Now;
 
@@ -136,7 +136,8 @@ begin
      query_oracle.ParamByName('ANO_PRESE').AsString:=ano_pre;
      query_oracle.ParamByName('CODI_ADUAN').AsString:=cod_aduana;
      query_oracle.ParamByName('CODI_REGI').AsString:=cod_regi;
-     query_oracle.ParamByName('NUM_ORDEN').AsString:=num_dua;
+     query_oracle.ParamByName('NUME_ORDEN').AsString:=num_orden;
+     query_oracle.ParamByName('NUME_ORDEN').AsString:=num_dua;
 
      query_oracle.Prepare;
 
@@ -148,9 +149,9 @@ begin
      if (rows_affected = 0) then
      begin
 
-       query_insert:='INSERT INTO ORDEN_SEMAFORO_WEB (EMPRESA,ANO_PRESE,CODI_ADUAN,CODI_REGI,NUM_ORDEN,';
+       query_insert:='INSERT INTO ORDEN_SEMAFORO_WEB (EMPRESA,ANO_PRESE,CODI_ADUAN,CODI_REGI,NUME_ORDEN,';
        query_insert:=query_insert+'NUM_DUA,EST_INTRUSIVO,FECHA_CREACION,FECHA_ACTUAL,CONTENIDO_WEB) VALUES (';
-       query_insert:=query_insert+':EMPRESA,:ANO_PRESE,:CODI_ADUAN,:CODI_REGI,:NUM_ORDEN,:NUM_DUA,';
+       query_insert:=query_insert+':EMPRESA,:ANO_PRESE,:CODI_ADUAN,:CODI_REGI,:NUME_ORDEN,:NUM_DUA,';
        query_insert:=query_insert+':EST_INTRUSIVO,:FECHA_CREACION,:FECHA_ACTUAL,:CONTENIDO)';
 
        query_oracle.SQL.Clear;
@@ -159,7 +160,7 @@ begin
        query_oracle.ParamByName('ANO_PRESE').AsString:=ano_pre;
        query_oracle.ParamByName('CODI_ADUAN').AsString:=cod_aduana;
        query_oracle.ParamByName('CODI_REGI').AsString:=cod_regi;
-       query_oracle.ParamByName('NUM_ORDEN').AsString:=num_dua;
+       query_oracle.ParamByName('NUME_ORDEN').AsString:=num_orden;
        query_oracle.ParamByName('NUM_DUA').AsString:=num_dua;
        query_oracle.ParamByName('EST_INTRUSIVO').AsInteger:=0;
        query_oracle.ParamByName('FECHA_CREACION').AsDate:=tiempo_actual;
@@ -172,7 +173,7 @@ begin
        query_update:='UPDATE ORDEN_SEMAFORO_WEB SET CONTENIDO_WEB=:CONTENIDO, FECHA_ACTUAL=:FECHA_ACTUAL WHERE';
        query_update:=query_update+' EMPRESA=:EMPRESA AND ANO_PRESE=:ANO_PRESE';
        query_update:=query_update+' AND CODI_ADUAN=:CODI_ADUAN AND CODI_REGI=:CODI_REGI';
-       query_update:=query_update+' AND NUM_ORDEN=:NUM_ORDEN';
+       query_update:=query_update+' AND NUME_ORDEN=:NUM_ORDEN';
 
        query_oracle.SQL.Clear;
        query_oracle.SQL.Add(query_update);
@@ -180,8 +181,7 @@ begin
        query_oracle.ParamByName('ANO_PRESE').AsString:=ano_pre;
        query_oracle.ParamByName('CODI_ADUAN').AsString:=cod_aduana;
        query_oracle.ParamByName('CODI_REGI').AsString:=cod_regi;
-       query_oracle.ParamByName('NUM_ORDEN').AsString:=num_dua;
-       //query_oracle.ParamByName('EST_INTRUSIVO').AsInteger:=0;
+       query_oracle.ParamByName('NUME_ORDEN').AsString:=num_orden;
        query_oracle.ParamByName('FECHA_ACTUAL').AsDate:=tiempo_actual;
        query_oracle.ParamByName('CONTENIDO').AsBlob:=contenido.Text;
      end;

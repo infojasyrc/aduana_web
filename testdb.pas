@@ -148,7 +148,7 @@ begin
        codi_aduan:=Trim(query_oracle.FieldByName('CODI_ADUAN').AsString);
        ano_prese:=Trim(query_oracle.FieldByName('ANO_PRESE').AsString);
 
-       parametros:=codi_aduan+':'+nume_orden+':'+codi_regi+':'+ano_prese;
+       parametros:=codi_aduan+':'+nume_orden+':'+codi_regi+':'+ano_prese+':'+num_dua;
        WriteLn(parametros);
        cliente_socket(parametros);
        //WriteLn(empresa,' ',nume_orden,' ',codi_regi,' ',codi_aduan,' ',ano_prese);

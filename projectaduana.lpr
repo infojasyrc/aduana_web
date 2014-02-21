@@ -65,21 +65,21 @@ begin
   Result:=contenido_final;
 end;
 
-procedure aplicacion(cod_aduana,ano_pre,cod_regi,num_dua,tipo_doc,html:String);
+procedure aplicacion(cod_aduana,ano_pre,cod_regi,num_dua,num_orden,tipo_doc,html:String);
 var
   contenido_html:TStrings;
 
 begin
   contenido_html:=lector_html(html);
 
-  admindb.otro_insert(cod_aduana,ano_pre,cod_regi,num_dua,tipo_doc,contenido_html);
+  admindb.otro_insert(cod_aduana,ano_pre,cod_regi,num_dua,num_orden,tipo_doc,contenido_html);
 
 end;
 
 procedure aduana.DoRun;
 var
   ErrorMsg:String;
-  cod_aduana,ano_prese,num_dua,cod_regi,tipo_doc,archivo_html:String;
+  cod_aduana,ano_prese,num_dua,num_orden,cod_regi,tipo_doc,archivo_html:String;
   numero_parametros:Integer;
 
 begin
@@ -101,7 +101,7 @@ begin
   { add your program here }
   numero_parametros:=ParamCount;
 
-  if numero_parametros<6 then
+  if numero_parametros<7 then
   begin
     WriteLn('Numero de parametros incorrectos');
     Terminate;
@@ -112,8 +112,9 @@ begin
   ano_prese:=ParamStr(2);
   cod_regi:=ParamStr(3);
   num_dua:=ParamStr(4);
-  tipo_doc:=ParamStr(5);
-  archivo_html:=ParamStr(6);
+  num_orden:=ParamStr(5);
+  tipo_doc:=ParamStr(6);
+  archivo_html:=ParamStr(7);
 
   {
   WriteLn(ParamStr(0));
@@ -123,12 +124,13 @@ begin
   WriteLn(ParamStr(4));
   WriteLn(ParamStr(5));
   WriteLn(ParamStr(6));
+  WriteLn(ParamStr(7));
   }
 
   if FileExists(archivo_html) then
   begin
     //WriteLn('Excelente');
-    aplicacion(cod_aduana,ano_prese,cod_regi,num_dua,tipo_doc,archivo_html);
+    aplicacion(cod_aduana,ano_prese,cod_regi,num_dua,num_orden,tipo_doc,archivo_html);
   end;
 
   // stop program loop

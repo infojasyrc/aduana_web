@@ -39,15 +39,16 @@ class Gossip(object):
             num_orden = mylist[1].strip()
             cod_regi = mylist[2].strip()
             ano_prese = mylist[3].strip()
+            num_dua = mylist[4].strip()
             
-            self.set_information(cod_aduana, num_orden, cod_regi, ano_prese)
+            self.set_information(cod_aduana, num_orden, num_dua, cod_regi, ano_prese)
             
             c.send("")
             c.close()
     
-    def set_information(self, cod_aduana, num_orden, cod_regi, ano_prese):
+    def set_information(self, cod_aduana, num_orden, num_dua, cod_regi, ano_prese):
         aduana = Aduana()
-        aduana.set_parameters(cod_aduana, ano_prese, cod_regi, num_orden, self.tipo_doc)
+        aduana.set_parameters(cod_aduana, ano_prese, cod_regi, num_orden, num_dua, self.tipo_doc)
         aduana.execute()
         aduana.clean_data()
     

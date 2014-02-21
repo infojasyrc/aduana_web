@@ -34,7 +34,7 @@ class Aduana(object):
         self.src_html = ""
         self.final_html = ""
     
-    def set_parameters(self, cod_aduana, ano_prese, cod_registro, num_orden, tipo_doc):
+    def set_parameters(self, cod_aduana, ano_prese, cod_registro, num_orden, num_dua, tipo_doc):
         number = random.randint(0,5)
         realtime = datetime.now().strftime("%Y%m%d%H%M%S")
         filename = "%s_%d" % (realtime, number)
@@ -44,6 +44,7 @@ class Aduana(object):
         self.ano_prese = ano_prese
         self.cod_registro = cod_registro
         self.num_orden = num_orden
+        self.num_dua = num_dua
         self.tipo_doc = tipo_doc
         self.cookie_file = os.path.join(self.cookies_folder, filename+".txt")
         
@@ -155,9 +156,9 @@ class Aduana(object):
         
         launcher = os.path.join(self.bin_folder,"projectaduana")
         
-        command = '%s "%s" "%s" "%s" "%s" "%s" "%s"' % (launcher, self.cod_aduana, self.ano_prese,
-                                                        self.cod_registro, self.num_orden, 
-                                                        self.tipo_doc, final_name)
+        command = '%s "%s" "%s" "%s" "%s" "%s" "%s" "%s"' % (launcher, self.cod_aduana, self.ano_prese,
+                                                             self.cod_registro, self.num_dua, self.num_orden,
+                                                             self.tipo_doc, final_name)
         
         return command
     
@@ -248,10 +249,11 @@ if __name__ == '__main__':
     ano_prese = "2014"
     cod_registro = "10"
     num_orden = "052242"
+    num_dua = "052242"
     tipo_doc = "01"
     
     aduana = Aduana()
-    aduana.set_parameters(cod_aduana, ano_prese, cod_registro, num_orden, tipo_doc)
+    aduana.set_parameters(cod_aduana, ano_prese, cod_registro, num_orden, num_dua, tipo_doc)
     aduana.execute()
     aduana.clean_data()
     
