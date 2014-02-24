@@ -28,29 +28,28 @@ class Gossip(object):
             print ('Address:',addr,'Data:',data)
            
             mylist=list(data.split(':'))
-            '''
-            intlist=list()
-            for i in range(0,len(mylist)):
-                intlist.append(int(mylist[i]))
             
-            intlist.sort()
-            '''
-            cod_aduana = mylist[0].strip()
-            num_orden = mylist[1].strip()
-            cod_regi = mylist[2].strip()
-            ano_prese = mylist[3].strip()
-            num_dua = mylist[4].strip()
+            empresa = mylist[0].strip()
+            cod_aduana = mylist[1].strip()
+            num_orden = mylist[2].strip()
+            cod_regi = mylist[3].strip()
+            ano_prese = mylist[4].strip()
+            num_dua = mylist[5].strip()
+            option = mylist[6].strip()
             
-            self.set_information(cod_aduana, num_orden, num_dua, cod_regi, ano_prese)
+            result = self.set_information(empresa, cod_aduana, num_orden, num_dua, cod_regi, ano_prese, option)
             
-            c.send("")
+            c.send(result)
             c.close()
     
-    def set_information(self, cod_aduana, num_orden, num_dua, cod_regi, ano_prese):
+    def set_information(self, empresa, cod_aduana, num_orden, num_dua, cod_regi, ano_prese, option):
         aduana = Aduana()
-        aduana.set_parameters(cod_aduana, ano_prese, cod_regi, num_orden, num_dua, self.tipo_doc)
+        aduana.set_parameters(empresa, cod_aduana, ano_prese, cod_regi, num_orden, num_dua, self.tipo_doc, option)
         aduana.execute()
         aduana.clean_data()
+        result = aduana.get_result()
+        #print result
+        return result
     
     def getCaptcha(self):
         obj_captcha = Captcha()

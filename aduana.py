@@ -33,12 +33,14 @@ class Aduana(object):
         self.ur_final = ""
         self.src_html = ""
         self.final_html = ""
+        self.final_result = ""
     
-    def set_parameters(self, cod_aduana, ano_prese, cod_registro, num_orden, num_dua, tipo_doc):
+    def set_parameters(self, empresa, cod_aduana, ano_prese, cod_registro, num_orden, num_dua, tipo_doc, option="0"):
         number = random.randint(0,5)
         realtime = datetime.now().strftime("%Y%m%d%H%M%S")
         filename = "%s_%d" % (realtime, number)
         
+        self.empresa = empresa
         self.filename = filename
         self.cod_aduana = cod_aduana
         self.ano_prese = ano_prese
@@ -46,6 +48,7 @@ class Aduana(object):
         self.num_orden = num_orden
         self.num_dua = num_dua
         self.tipo_doc = tipo_doc
+        self.option = option
         self.cookie_file = os.path.join(self.cookies_folder, filename+".txt")
         
         self.url_captcha, self.url_form = self.read_config()
@@ -75,7 +78,10 @@ class Aduana(object):
         return command
     
     def move_file(self, src, dst):
-        shutil.move(src, dst)
+        try:
+            shutil.move(src, dst)
+        except IOError:
+            print "Error en el archivo de origen: %s" % src
     
     def move_cookie_folder(self):
         tmp_folder = os.path.join(self.cookies_folder, "ol-ad-ao")
@@ -156,9 +162,18 @@ class Aduana(object):
         
         launcher = os.path.join(self.bin_folder,"projectaduana")
         
-        command = '%s "%s" "%s" "%s" "%s" "%s" "%s" "%s"' % (launcher, self.cod_aduana, self.ano_prese,
-                                                             self.cod_registro, self.num_dua, self.num_orden,
-                                                             self.tipo_doc, final_name)
+        if self.option == "1":
+        
+            command = '%s "%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s"' % (launcher, self.empresa,
+                                                                           self.cod_aduana, self.ano_prese,
+                                                                           self.cod_registro, self.num_dua,
+                                                                           self.num_orden, self.tipo_doc,
+                                                                           self.option, final_name)
+        else:
+            command = '%s "%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s"' % (launcher, self.empresa,
+                                                                      self.cod_aduana, self.ano_prese,
+                                                                      self.cod_registro, self.num_dua,
+                                                                      self.num_orden, self.tipo_doc, self.option)
         
         return command
     
@@ -224,7 +239,10 @@ class Aduana(object):
                             final_cmmd = self.save_data()
                             obj_command.execute_command(final_cmmd)
                             dict_save = obj_command.get_final_result()
-                            print dict_save["message"] 
+                            if dict_save["message"] == None:
+                                self.final_result = ""
+                            else:
+                                self.final_result = dict_save["message"]                                
                             break
                         else:
                             print dict_final_result["message"]
@@ -242,9 +260,13 @@ class Aduana(object):
                 continue
         
         #self.clean_data(image_file)
+    
+    def get_result(self):
+        return self.final_result
 
 
 if __name__ == '__main__':
+    empresa = "001"
     cod_aduana = "118"
     ano_prese = "2014"
     cod_registro = "10"
@@ -253,7 +275,7 @@ if __name__ == '__main__':
     tipo_doc = "01"
     
     aduana = Aduana()
-    aduana.set_parameters(cod_aduana, ano_prese, cod_registro, num_orden, num_dua, tipo_doc)
+    aduana.set_parameters(empresa, cod_aduana, ano_prese, cod_registro, num_orden, num_dua, tipo_doc)
     aduana.execute()
     aduana.clean_data()
     

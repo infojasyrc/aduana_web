@@ -65,21 +65,26 @@ begin
   Result:=contenido_final;
 end;
 
-procedure aplicacion(cod_aduana,ano_pre,cod_regi,num_dua,num_orden,tipo_doc,html:String);
+procedure aplicacion(empresa,cod_aduana,ano_pre,cod_regi,num_dua,num_orden,tipo_doc,html:String);
 var
   contenido_html:TStrings;
 
 begin
   contenido_html:=lector_html(html);
+  admindb.otro_insert(empresa,cod_aduana,ano_pre,cod_regi,num_dua,num_orden,tipo_doc,contenido_html);
 
-  admindb.otro_insert(cod_aduana,ano_pre,cod_regi,num_dua,num_orden,tipo_doc,contenido_html);
+end;
 
+procedure muestra_web(empresa,cod_aduana,ano_pre,cod_regi,num_dua,num_orden:String);
+begin
+  admindb.muestra_html(empresa,cod_aduana,ano_pre,cod_regi,num_dua,num_orden);
 end;
 
 procedure aduana.DoRun;
 var
   ErrorMsg:String;
   cod_aduana,ano_prese,num_dua,num_orden,cod_regi,tipo_doc,archivo_html:String;
+  opcion_respuesta,empresa:String;
   numero_parametros:Integer;
 
 begin
@@ -101,36 +106,38 @@ begin
   { add your program here }
   numero_parametros:=ParamCount;
 
-  if numero_parametros<7 then
+  if numero_parametros<8 then
   begin
     WriteLn('Numero de parametros incorrectos');
     Terminate;
     Exit;
   end;
 
-  cod_aduana:=ParamStr(1);
-  ano_prese:=ParamStr(2);
-  cod_regi:=ParamStr(3);
-  num_dua:=ParamStr(4);
-  num_orden:=ParamStr(5);
-  tipo_doc:=ParamStr(6);
-  archivo_html:=ParamStr(7);
+  empresa:=ParamStr(1);
+  cod_aduana:=ParamStr(2);
+  ano_prese:=ParamStr(3);
+  cod_regi:=ParamStr(4);
+  num_dua:=ParamStr(5);
+  num_orden:=ParamStr(6);
+  tipo_doc:=ParamStr(7);
+  opcion_respuesta:=ParamStr(8);
+  archivo_html:=ParamStr(9);
 
-  {
-  WriteLn(ParamStr(0));
-  WriteLn(ParamStr(1));
-  WriteLn(ParamStr(2));
-  WriteLn(ParamStr(3));
-  WriteLn(ParamStr(4));
-  WriteLn(ParamStr(5));
-  WriteLn(ParamStr(6));
-  WriteLn(ParamStr(7));
-  }
-
-  if FileExists(archivo_html) then
+  if opcion_respuesta = '1' then
   begin
-    //WriteLn('Excelente');
-    aplicacion(cod_aduana,ano_prese,cod_regi,num_dua,num_orden,tipo_doc,archivo_html);
+    if FileExists(archivo_html) then
+    begin
+      aplicacion(empresa,cod_aduana,ano_prese,cod_regi,num_dua,num_orden,tipo_doc,archivo_html);
+    end
+    else
+    begin
+      WriteLn('Archivo No encontrado');
+    end;
+  end
+  else
+  begin
+
+    muestra_web(empresa,cod_aduana,ano_prese,cod_regi,num_dua,num_orden);
   end;
 
   // stop program loop

@@ -10,7 +10,8 @@ uses
   function obtiene_archivo_ini():String;
   function lector_ini():TStringList;
   function conexion():TZConnection;
-  procedure otro_insert(cod_aduana,ano_pre,cod_regi,num_dua,num_orden,tipo_doc:String;contenido:TStrings);
+  procedure otro_insert(empresa,cod_aduana,ano_pre,cod_regi,num_dua,num_orden,tipo_doc:String;contenido:TStrings);
+  procedure muestra_html(empresa,cod_aduana,ano_pre,cod_regi,num_dua,num_orden:String);
 
 implementation
 
@@ -101,8 +102,53 @@ begin
 
 end;
 
+// Muestra la pagina web
+procedure muestra_html(empresa,cod_aduana,ano_pre,cod_regi,num_dua,num_orden:String);
+var
+  conexion_oracle: TZConnection;
+  query_oracle: TZQuery;
+  query_select: String;
+  parameters_conexion:TStringList;
+  contenido_web:String;
+
+begin
+  query_select:='SELECT CONTENIDO_WEB FROM ORDEN_SEMAFORO_WEB WHERE';
+  query_select:=query_select+' EMPRESA=:EMPRESA AND ANO_PRESE=:ANO_PRESE';
+  query_select:=query_select+' AND CODI_ADUAN=:CODI_ADUAN AND CODI_REGI=:CODI_REGI';
+  query_select:=query_select+' AND NUME_ORDEN=:NUME_ORDEN AND NUM_DUA=:NUM_DUA';
+
+  try
+     parameters_conexion:=lector_ini();
+
+     conexion_oracle:=conexion();
+     query_oracle:=TZQuery.create(nil);
+
+     query_oracle.Connection:=conexion_oracle;
+     query_oracle.SQL.Clear;
+
+     query_oracle.SQL.Add(query_select);
+     query_oracle.ParamByName('EMPRESA').AsString:=empresa;
+     query_oracle.ParamByName('ANO_PRESE').AsString:=ano_pre;
+     query_oracle.ParamByName('CODI_ADUAN').AsString:=cod_aduana;
+     query_oracle.ParamByName('CODI_REGI').AsString:=cod_regi;
+     query_oracle.ParamByName('NUME_ORDEN').AsString:=num_orden;
+     query_oracle.ParamByName('NUM_DUA').AsString:=num_dua;
+
+     query_oracle.Prepare;
+
+     query_oracle.Open;
+     contenido_web:=query_oracle.FieldByName('CONTENIDO_WEB').AsString;
+     WriteLn(contenido_web);
+     query_oracle.Close;
+
+     conexion_oracle.Commit;
+  finally
+  end;
+
+end;
+
 // Ejecuta la sentencia
-procedure otro_insert(cod_aduana,ano_pre,cod_regi,num_dua,num_orden,tipo_doc:String;contenido:TStrings);
+procedure otro_insert(empresa,cod_aduana,ano_pre,cod_regi,num_dua,num_orden,tipo_doc:String;contenido:TStrings);
 var
   // Crea una conexion
   conexion_oracle: TZConnection;
@@ -132,18 +178,18 @@ begin
      query_oracle.SQL.Clear;
 
      query_oracle.SQL.Add(query_select);
-     query_oracle.ParamByName('EMPRESA').AsString:='001';
+     query_oracle.ParamByName('EMPRESA').AsString:=empresa;
      query_oracle.ParamByName('ANO_PRESE').AsString:=ano_pre;
      query_oracle.ParamByName('CODI_ADUAN').AsString:=cod_aduana;
      query_oracle.ParamByName('CODI_REGI').AsString:=cod_regi;
      query_oracle.ParamByName('NUME_ORDEN').AsString:=num_orden;
-     query_oracle.ParamByName('NUME_ORDEN').AsString:=num_dua;
+     query_oracle.ParamByName('NUM_DUA').AsString:=num_dua;
 
      query_oracle.Prepare;
 
      query_oracle.Open;
      rows_affected:=query_oracle.FieldByName('CONTADOR').AsInteger;
-     WriteLn(rows_affected);
+     //WriteLn(rows_affected);
      query_oracle.Close;
 
      if (rows_affected = 0) then
@@ -156,7 +202,7 @@ begin
 
        query_oracle.SQL.Clear;
        query_oracle.SQL.Add(query_insert);
-       query_oracle.ParamByName('EMPRESA').AsString:='001';
+       query_oracle.ParamByName('EMPRESA').AsString:=empresa;
        query_oracle.ParamByName('ANO_PRESE').AsString:=ano_pre;
        query_oracle.ParamByName('CODI_ADUAN').AsString:=cod_aduana;
        query_oracle.ParamByName('CODI_REGI').AsString:=cod_regi;
@@ -173,11 +219,11 @@ begin
        query_update:='UPDATE ORDEN_SEMAFORO_WEB SET CONTENIDO_WEB=:CONTENIDO, FECHA_ACTUAL=:FECHA_ACTUAL WHERE';
        query_update:=query_update+' EMPRESA=:EMPRESA AND ANO_PRESE=:ANO_PRESE';
        query_update:=query_update+' AND CODI_ADUAN=:CODI_ADUAN AND CODI_REGI=:CODI_REGI';
-       query_update:=query_update+' AND NUME_ORDEN=:NUM_ORDEN';
+       query_update:=query_update+' AND NUME_ORDEN=:NUME_ORDEN';
 
        query_oracle.SQL.Clear;
        query_oracle.SQL.Add(query_update);
-       query_oracle.ParamByName('EMPRESA').AsString:='001';
+       query_oracle.ParamByName('EMPRESA').AsString:=empresa;
        query_oracle.ParamByName('ANO_PRESE').AsString:=ano_pre;
        query_oracle.ParamByName('CODI_ADUAN').AsString:=cod_aduana;
        query_oracle.ParamByName('CODI_REGI').AsString:=cod_regi;

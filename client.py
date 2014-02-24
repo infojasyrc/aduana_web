@@ -42,7 +42,8 @@ class Client(object):
 if __name__ == '__main__':
     ip = "172.16.105.35"
     #data = "123456789"
-    data = "118:052242:10:2014"
+    #data = "118:052242:10:2014"
+    data = "001:118:001712:10:2014:032706:0"
     
     client = Client()
     client.execute(ip,data)

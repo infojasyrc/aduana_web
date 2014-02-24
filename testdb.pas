@@ -113,11 +113,12 @@ var
   parameters_conexion:TStringList;
   tiempo_actual:TDateTime;
   empresa,nume_orden,num_dua,codi_regi,codi_aduan,ano_prese:String;
-  parametros,resultado:String;
+  parametros,resultado,opcion_resultado:String;
 
 begin
+  opcion_resultado:='1';
 
-  query_select:='SELECT EMPRESA,NUME_ORDEN, NUM_DUA, CODI_REGI,CODI_ADUAN,ANO_PRESE';
+  query_select:='SELECT EMPRESA, NUME_ORDEN, NUM_DUA, CODI_REGI,CODI_ADUAN,ANO_PRESE';
   query_select:=query_select+' FROM ORDEN WHERE (SYSDATE - FEC_NUMERACION) < 30';
   query_select:=query_select+' ORDER BY FEC_NUMERACION';
 
@@ -148,7 +149,7 @@ begin
        codi_aduan:=Trim(query_oracle.FieldByName('CODI_ADUAN').AsString);
        ano_prese:=Trim(query_oracle.FieldByName('ANO_PRESE').AsString);
 
-       parametros:=codi_aduan+':'+nume_orden+':'+codi_regi+':'+ano_prese+':'+num_dua;
+       parametros:=empresa+':'+codi_aduan+':'+nume_orden+':'+codi_regi+':'+ano_prese+':'+num_dua+':'+opcion_resultado;
        WriteLn(parametros);
        cliente_socket(parametros);
        //WriteLn(empresa,' ',nume_orden,' ',codi_regi,' ',codi_aduan,' ',ano_prese);
