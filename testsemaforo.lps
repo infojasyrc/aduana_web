@@ -10,9 +10,9 @@
         <UnitName Value="testsemaforo"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="47"/>
-        <CursorPos X="16" Y="15"/>
-        <UsageCount Value="30"/>
+        <TopLine Value="1"/>
+        <CursorPos X="70" Y="9"/>
+        <UsageCount Value="46"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -22,18 +22,18 @@
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="180"/>
-        <CursorPos X="17" Y="202"/>
-        <UsageCount Value="30"/>
+        <TopLine Value="253"/>
+        <CursorPos X="47" Y="276"/>
+        <UsageCount Value="46"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="/usr/lib/codetyphon/fpcsrc/packages/rtl-extra/src/unix/sockets.pp"/>
         <UnitName Value="Sockets"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="7"/>
+        <TopLine Value="5"/>
         <CursorPos X="5" Y="20"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="10"/>
       </Unit2>
     </Units>
     <General>
@@ -42,123 +42,123 @@
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="testdb.pas"/>
-        <Caret Line="154" Column="1" TopLine="141"/>
+        <Caret Line="205" Column="1" TopLine="182"/>
       </Position1>
       <Position2>
         <Filename Value="testdb.pas"/>
-        <Caret Line="142" Column="1" TopLine="137"/>
+        <Caret Line="206" Column="1" TopLine="182"/>
       </Position2>
       <Position3>
         <Filename Value="testdb.pas"/>
-        <Caret Line="144" Column="1" TopLine="137"/>
+        <Caret Line="212" Column="15" TopLine="201"/>
       </Position3>
       <Position4>
         <Filename Value="testdb.pas"/>
-        <Caret Line="145" Column="1" TopLine="137"/>
+        <Caret Line="231" Column="20" TopLine="205"/>
       </Position4>
       <Position5>
         <Filename Value="testdb.pas"/>
-        <Caret Line="146" Column="1" TopLine="137"/>
+        <Caret Line="212" Column="12" TopLine="197"/>
       </Position5>
       <Position6>
         <Filename Value="testdb.pas"/>
-        <Caret Line="147" Column="1" TopLine="137"/>
+        <Caret Line="237" Column="50" TopLine="215"/>
       </Position6>
       <Position7>
         <Filename Value="testdb.pas"/>
-        <Caret Line="148" Column="1" TopLine="137"/>
+        <Caret Line="223" Column="33" TopLine="194"/>
       </Position7>
       <Position8>
         <Filename Value="testdb.pas"/>
-        <Caret Line="149" Column="1" TopLine="137"/>
+        <Caret Line="221" Column="19" TopLine="206"/>
       </Position8>
       <Position9>
         <Filename Value="testdb.pas"/>
-        <Caret Line="151" Column="1" TopLine="137"/>
+        <Caret Line="232" Column="4" TopLine="214"/>
       </Position9>
       <Position10>
         <Filename Value="testdb.pas"/>
-        <Caret Line="152" Column="1" TopLine="137"/>
+        <Caret Line="239" Column="41" TopLine="224"/>
       </Position10>
       <Position11>
         <Filename Value="testdb.pas"/>
-        <Caret Line="197" Column="1" TopLine="184"/>
+        <Caret Line="8" Column="98" TopLine="227"/>
       </Position11>
       <Position12>
         <Filename Value="testdb.pas"/>
-        <Caret Line="198" Column="1" TopLine="184"/>
+        <Caret Line="241" Column="28" TopLine="226"/>
       </Position12>
       <Position13>
         <Filename Value="testdb.pas"/>
-        <Caret Line="199" Column="1" TopLine="184"/>
+        <Caret Line="240" Column="6" TopLine="226"/>
       </Position13>
       <Position14>
         <Filename Value="testdb.pas"/>
-        <Caret Line="200" Column="1" TopLine="184"/>
+        <Caret Line="218" Column="11" TopLine="193"/>
       </Position14>
       <Position15>
         <Filename Value="testdb.pas"/>
-        <Caret Line="201" Column="1" TopLine="184"/>
+        <Caret Line="8" Column="103" TopLine="1"/>
       </Position15>
       <Position16>
         <Filename Value="testdb.pas"/>
-        <Caret Line="204" Column="1" TopLine="184"/>
+        <Caret Line="259" Column="3" TopLine="234"/>
       </Position16>
       <Position17>
         <Filename Value="testdb.pas"/>
-        <Caret Line="154" Column="1" TopLine="141"/>
+        <Caret Line="265" Column="18" TopLine="241"/>
       </Position17>
       <Position18>
         <Filename Value="testdb.pas"/>
-        <Caret Line="142" Column="1" TopLine="137"/>
+        <Caret Line="266" Column="19" TopLine="241"/>
       </Position18>
       <Position19>
         <Filename Value="testdb.pas"/>
-        <Caret Line="144" Column="1" TopLine="137"/>
+        <Caret Line="155" Column="11" TopLine="132"/>
       </Position19>
       <Position20>
         <Filename Value="testdb.pas"/>
-        <Caret Line="145" Column="1" TopLine="137"/>
+        <Caret Line="261" Column="4" TopLine="250"/>
       </Position20>
       <Position21>
         <Filename Value="testdb.pas"/>
-        <Caret Line="146" Column="1" TopLine="137"/>
+        <Caret Line="8" Column="112" TopLine="1"/>
       </Position21>
       <Position22>
         <Filename Value="testdb.pas"/>
-        <Caret Line="147" Column="1" TopLine="137"/>
+        <Caret Line="268" Column="16" TopLine="252"/>
       </Position22>
       <Position23>
         <Filename Value="testdb.pas"/>
-        <Caret Line="148" Column="1" TopLine="137"/>
+        <Caret Line="269" Column="59" TopLine="252"/>
       </Position23>
       <Position24>
         <Filename Value="testdb.pas"/>
-        <Caret Line="149" Column="1" TopLine="137"/>
+        <Caret Line="265" Column="38" TopLine="250"/>
       </Position24>
       <Position25>
         <Filename Value="testdb.pas"/>
-        <Caret Line="151" Column="1" TopLine="137"/>
+        <Caret Line="8" Column="103" TopLine="1"/>
       </Position25>
       <Position26>
         <Filename Value="testdb.pas"/>
-        <Caret Line="152" Column="1" TopLine="137"/>
+        <Caret Line="268" Column="18" TopLine="253"/>
       </Position26>
       <Position27>
         <Filename Value="testdb.pas"/>
-        <Caret Line="197" Column="1" TopLine="184"/>
+        <Caret Line="14" Column="5" TopLine="1"/>
       </Position27>
       <Position28>
         <Filename Value="testdb.pas"/>
-        <Caret Line="198" Column="1" TopLine="184"/>
+        <Caret Line="268" Column="18" TopLine="253"/>
       </Position28>
       <Position29>
         <Filename Value="testdb.pas"/>
-        <Caret Line="199" Column="1" TopLine="184"/>
+        <Caret Line="267" Column="25" TopLine="253"/>
       </Position29>
       <Position30>
         <Filename Value="testdb.pas"/>
-        <Caret Line="153" Column="8" TopLine="184"/>
+        <Caret Line="268" Column="19" TopLine="253"/>
       </Position30>
     </JumpHistory>
   </ProjectSession>

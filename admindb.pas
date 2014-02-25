@@ -10,6 +10,7 @@ uses
   function obtiene_archivo_ini():String;
   function lector_ini():TStringList;
   function conexion():TZConnection;
+  procedure verifica_fecha_retiro(empresa,cod_aduana,ano_pre,cod_regi,num_dua,num_orden:String);
   procedure graba_datos(empresa,cod_aduana,ano_pre,cod_regi,num_dua,num_orden,tipo_doc,archivo:String;contenido:TStrings);
   procedure muestra_html(empresa,cod_aduana,ano_pre,cod_regi,num_dua,num_orden:String);
 
@@ -99,6 +100,21 @@ begin
     Exit;
   end;
   end;
+
+end;
+
+procedure verifica_fecha_retiro(empresa,cod_aduana,ano_pre,cod_regi,num_dua,num_orden:String);
+var
+  conexion_oracle: TZConnection;
+  query_oracle: TZQuery;
+  query_select: String;
+  parameters_conexion:TStringList;
+  local_file:String;
+begin
+  query_select:='SELECT ARCHIVO_LOCAL FROM ORDEN_SEMAFORO_WEB WHERE';
+  query_select:=query_select+' EMPRESA=:EMPRESA AND ANO_PRESE=:ANO_PRESE';
+  query_select:=query_select+' AND CODI_ADUAN=:CODI_ADUAN AND CODI_REGI=:CODI_REGI';
+  query_select:=query_select+' AND NUME_ORDEN=:NUME_ORDEN AND NUM_DUA=:NUM_DUA';
 
 end;
 

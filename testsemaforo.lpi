@@ -29,10 +29,13 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="1">
+    <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="pl_zeosdbo"/>
+        <PackageName Value="pl_lnet"/>
       </Item1>
+      <Item2>
+        <PackageName Value="pl_zeosdbo"/>
+      </Item2>
     </RequiredPackages>
     <Units Count="2">
       <Unit0>

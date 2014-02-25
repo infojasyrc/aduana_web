@@ -6,7 +6,7 @@ uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
   cthreads,
   {$ENDIF}{$ENDIF}
-  Classes, SysUtils, CustApp, testdb, pl_zeosdbo, Interfaces;
+  Classes, SysUtils, CustApp, testdb, pl_zeosdbo, pl_lnet, Interfaces;
   { you can add units after this }
 
 type

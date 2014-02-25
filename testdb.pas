@@ -5,13 +5,13 @@ unit testdb;
 interface
 
 uses
-  Classes, SysUtils, oracleconnection, sqldb, IniFiles, ZConnection, ZDataset,db, Sockets;
+  Classes, SysUtils, oracleconnection, sqldb, IniFiles, ZConnection, ZDataset,db, lNet, lNetComponents;
   function obtiene_archivo_ini():String;
   function lector_ini():TStringList;
   function conexion():TZConnection;
   procedure tester();
   procedure cliente_socket(parametros:String);
-  procedure PError(const S:string);
+  //procedure PError(const S:string);
 
 implementation
 
@@ -152,7 +152,7 @@ begin
        parametros:=empresa+':'+codi_aduan+':'+nume_orden+':'+codi_regi+':'+ano_prese+':'+num_dua+':'+opcion_resultado;
        WriteLn(parametros);
        cliente_socket(parametros);
-       //WriteLn(empresa,' ',nume_orden,' ',codi_regi,' ',codi_aduan,' ',ano_prese);
+       ReadLn();
        query_oracle.Next;
      end;
 
@@ -169,17 +169,30 @@ begin
   end;
 end;
 
+{
 // Funcion que se conecta al socket
 procedure cliente_socket(parametros:String);
 var
+
   SAddr    : TInetSockAddr;
   //Buffer   : string [255];
   Buffer   : String;
   S        : Longint;
   Sin,Sout : Text;
   i        : integer;
+  Line     : string;
 
+  {
+  ServerAddr       : TInetSockAddr;
+  //Buffer           : String[255];
+  Buffer           : String;
+  ServerSocket     : Longint;
+  Count            : Longint;
+  I                : Integer;
+  }
 begin
+
+  //S:=fpSocket (AF_INET,SOCK_STREAM,0);
   S:=fpSocket (AF_INET,SOCK_STREAM,0);
   if s=-1 then
    Perror('Client : Socket : ');
@@ -193,23 +206,93 @@ begin
    PError('Client : Connect : ');
   Reset(Sin);
   ReWrite(Sout);
-  Buffer:=parametros;
+  //Buffer:=parametros;
   //for i:=1 to 10 do
   //  Writeln(Sout,Buffer);
-  Write(Sout,Buffer);
+  //Write(Sout,Buffer);
+  WriteLn(Sout,parametros);
   Flush(Sout);
   Readln(Sin,Buffer);
   WriteLn(Buffer);
+  Close(Sin);
   Close(sout);
-
+  CloseSocket(S)
   //result:=sout.;
+
+  {
+  ServerSocket := fpSocket(AF_INET,SOCK_STREAM,0);
+  If ServerSocket =-1 Then
+   //PrintError('Client : Socket : ');
+   Perror('Client : Socket : ');
+  ServerAddr.sin_family := AF_INET;
+  { port 50000 in network order }
+  ServerAddr.sin_port := htons(11111);
+  { localhost : 127.0.0.1 in network order }
+  ServerAddr.sin_addr.s_addr :=htonl($7F000001);
+  {
+  If fpconnect(ServerSocket,@ServerAddr,Sizeof(ServerAddr)) = SOCKETERROR Then
+   PrintError('Client : Connect : ');
+  }
+  //Buffer := 'This is a textstring sent by the Client.';
+  Buffer := parametros;
+  {
+  For I := 1 To 10 Do
+    Count := fpsend(ServerSocket,@Buffer[1],Length(Buffer),0);
+  }
+  Count := fpsend(ServerSocket,@Buffer[1],Length(Buffer),0);
+
+  Count := fprecv(ServerSocket,@Buffer[1],255,0);
+  {
+  if Count <> SOCKET_ERROR Then
+    Begin
+    SetLength(Buffer,Count);
+    Writeln('Server sent: ',Buffer);
+    End;
+  }
+  CloseSocket(ServerSocket);
+  }
+end;
+}
+
+procedure cliente_socket(parametros:String);
+var
+  conexion_socket:TLSocket;
+  socket_client:TLTCPComponent;
+  cadena:string;
+begin
+  socket_client:=TLTCPComponent(nil);
+  socket_client.Host:='172.16.105.35';
+  socket_client.Name:='socket_client';
+  socket_client.Port:=11111;
+  socket_client.Connect;
+  //socket_client.OnConnect:=;
+  socket_client.OnConnect:=@scliente1Connect(socket_client,parametros);
+  socket_client.OnReceive:=@scliente1Receive(socket_client);
 end;
 
+procedure scliente1Connect(aSocket: TLSocket; parametros:String);
+begin
+  WriteLn('Se conecto');
+  scliente1.SendMessage(parametros);
+end;
+
+procedure scliente1Receive(aSocket: TLSocket);
+var
+   cadena:string;
+begin
+   scliente1.getmessage(cadena);
+   //showmessage(cadena);
+   //edit4.text:=cadena;
+   WriteLn(cadena);
+   scliente1.Disconnect(true);
+//   scliente1.getmessage(cadena)
+end;
+{
 procedure PError(const S:string);
 begin
   writeln(S,SocketError);
   halt(100);
 end;
-
+}
 end.
 

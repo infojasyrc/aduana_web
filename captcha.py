@@ -7,7 +7,7 @@ Created on Feb 13, 2014
 import urllib
 import os
 import ConfigParser
-from commands import Commands
+from utils.commands import Commands
 
 
 class Captcha(object):

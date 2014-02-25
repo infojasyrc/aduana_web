@@ -5,7 +5,7 @@ Created on Feb 13, 2014
 '''
 
 from captcha import Captcha
-from commands import Commands
+from utils.commands import Commands
 import os
 import random
 from datetime import datetime
@@ -199,6 +199,12 @@ class Aduana(object):
             s = ''.join((c for c in unicodedata.normalize('NFD',unicode(output)) if unicodedata.category(c) != 'Mn'))
             new_output = s.decode()
             
+            if new_output.find("/ol-ad-ao/captcha?accion=image") != -1:
+                new_output = new_output.replace("/ol-ad-ao/captcha?accion=image", "http://www.aduanet.gob.pe/ol-ad-ao/captcha?accion=image")
+            
+            if new_output.find("/aduanas/images/") != -1:
+                new_output = new_output.replace("/aduanas/images/", "http://www.aduanet.gob.pe/aduanas/images/")
+            
             final_name = os.path.join(self.final_folder,"final_"+self.filename+".html")
             final_html_file = open(final_name,"w")
             final_html_file.write(new_output)
@@ -284,12 +290,14 @@ if __name__ == '__main__':
     cod_aduana = "118"
     ano_prese = "2014"
     cod_registro = "10"
-    num_orden = "052242"
-    num_dua = "052242"
+    num_orden = "001287"
+    num_dua = "030541"
     tipo_doc = "01"
+    option = "1"
     
     aduana = Aduana()
-    aduana.set_parameters(empresa, cod_aduana, ano_prese, cod_registro, num_orden, num_dua, tipo_doc)
+    aduana.set_parameters(empresa, cod_aduana, ano_prese, cod_registro, num_orden, num_dua, tipo_doc, option)
     aduana.execute()
     aduana.clean_data()
+    print aduana.get_result()
     
