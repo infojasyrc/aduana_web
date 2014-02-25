@@ -10,7 +10,7 @@ uses
   function obtiene_archivo_ini():String;
   function lector_ini():TStringList;
   function conexion():TZConnection;
-  procedure otro_insert(empresa,cod_aduana,ano_pre,cod_regi,num_dua,num_orden,tipo_doc:String;contenido:TStrings);
+  procedure graba_datos(empresa,cod_aduana,ano_pre,cod_regi,num_dua,num_orden,tipo_doc,archivo:String;contenido:TStrings);
   procedure muestra_html(empresa,cod_aduana,ano_pre,cod_regi,num_dua,num_orden:String);
 
 implementation
@@ -109,10 +109,10 @@ var
   query_oracle: TZQuery;
   query_select: String;
   parameters_conexion:TStringList;
-  contenido_web:String;
+  local_file:String;
 
 begin
-  query_select:='SELECT CONTENIDO_WEB FROM ORDEN_SEMAFORO_WEB WHERE';
+  query_select:='SELECT ARCHIVO_LOCAL FROM ORDEN_SEMAFORO_WEB WHERE';
   query_select:=query_select+' EMPRESA=:EMPRESA AND ANO_PRESE=:ANO_PRESE';
   query_select:=query_select+' AND CODI_ADUAN=:CODI_ADUAN AND CODI_REGI=:CODI_REGI';
   query_select:=query_select+' AND NUME_ORDEN=:NUME_ORDEN AND NUM_DUA=:NUM_DUA';
@@ -137,8 +137,8 @@ begin
      query_oracle.Prepare;
 
      query_oracle.Open;
-     contenido_web:=query_oracle.FieldByName('CONTENIDO_WEB').AsString;
-     WriteLn(contenido_web);
+     local_file:=query_oracle.FieldByName('ARCHIVO_LOCAL').AsString;
+     WriteLn(local_file);
      query_oracle.Close;
 
      conexion_oracle.Commit;
@@ -148,7 +148,7 @@ begin
 end;
 
 // Ejecuta la sentencia
-procedure otro_insert(empresa,cod_aduana,ano_pre,cod_regi,num_dua,num_orden,tipo_doc:String;contenido:TStrings);
+procedure graba_datos(empresa,cod_aduana,ano_pre,cod_regi,num_dua,num_orden,tipo_doc,archivo:String;contenido:TStrings);
 var
   // Crea una conexion
   conexion_oracle: TZConnection;
@@ -196,9 +196,10 @@ begin
      begin
 
        query_insert:='INSERT INTO ORDEN_SEMAFORO_WEB (EMPRESA,ANO_PRESE,CODI_ADUAN,CODI_REGI,NUME_ORDEN,';
-       query_insert:=query_insert+'NUM_DUA,EST_INTRUSIVO,FECHA_CREACION,FECHA_ACTUAL,CONTENIDO_WEB) VALUES (';
+       query_insert:=query_insert+'NUM_DUA,EST_INTRUSIVO,FECHA_CREACION,FECHA_ACTUAL,CONTENIDO_WEB,';
+       query_insert:=query_insert+'ARCHIVO_LOCAL) VALUES (';
        query_insert:=query_insert+':EMPRESA,:ANO_PRESE,:CODI_ADUAN,:CODI_REGI,:NUME_ORDEN,:NUM_DUA,';
-       query_insert:=query_insert+':EST_INTRUSIVO,:FECHA_CREACION,:FECHA_ACTUAL,:CONTENIDO)';
+       query_insert:=query_insert+':EST_INTRUSIVO,:FECHA_CREACION,:FECHA_ACTUAL,:CONTENIDO,:ARCHIVO)';
 
        query_oracle.SQL.Clear;
        query_oracle.SQL.Add(query_insert);
@@ -212,12 +213,14 @@ begin
        query_oracle.ParamByName('FECHA_CREACION').AsDate:=tiempo_actual;
        query_oracle.ParamByName('FECHA_ACTUAL').AsDate:=tiempo_actual;
        query_oracle.ParamByName('CONTENIDO').AsBlob:=contenido.Text;
+       query_oracle.ParamByName('ARCHIVO').AsString:=archivo;
      end
      else
      begin
 
-       query_update:='UPDATE ORDEN_SEMAFORO_WEB SET CONTENIDO_WEB=:CONTENIDO, FECHA_ACTUAL=:FECHA_ACTUAL WHERE';
-       query_update:=query_update+' EMPRESA=:EMPRESA AND ANO_PRESE=:ANO_PRESE';
+       query_update:='UPDATE ORDEN_SEMAFORO_WEB SET CONTENIDO_WEB=:CONTENIDO, FECHA_ACTUAL=:FECHA_ACTUAL,';
+       query_update:=query_update+' ARCHIVO_LOCAL=:ARCHIVO';
+       query_update:=query_update+' WHERE EMPRESA=:EMPRESA AND ANO_PRESE=:ANO_PRESE';
        query_update:=query_update+' AND CODI_ADUAN=:CODI_ADUAN AND CODI_REGI=:CODI_REGI';
        query_update:=query_update+' AND NUME_ORDEN=:NUME_ORDEN';
 
@@ -230,6 +233,7 @@ begin
        query_oracle.ParamByName('NUME_ORDEN').AsString:=num_orden;
        query_oracle.ParamByName('FECHA_ACTUAL').AsDate:=tiempo_actual;
        query_oracle.ParamByName('CONTENIDO').AsBlob:=contenido.Text;
+       query_oracle.ParamByName('ARCHIVO').AsString:=archivo;
      end;
 
      query_oracle.Prepare;

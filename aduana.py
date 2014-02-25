@@ -39,9 +39,9 @@ class Aduana(object):
         number = random.randint(0,5)
         realtime = datetime.now().strftime("%Y%m%d%H%M%S")
         filename = "%s_%d" % (realtime, number)
+        self.filename = filename
         
         self.empresa = empresa
-        self.filename = filename
         self.cod_aduana = cod_aduana
         self.ano_prese = ano_prese
         self.cod_registro = cod_registro
@@ -49,6 +49,7 @@ class Aduana(object):
         self.num_dua = num_dua
         self.tipo_doc = tipo_doc
         self.option = option
+        
         self.cookie_file = os.path.join(self.cookies_folder, filename+".txt")
         
         self.url_captcha, self.url_form = self.read_config()
@@ -162,19 +163,21 @@ class Aduana(object):
         
         launcher = os.path.join(self.bin_folder,"projectaduana")
         
-        if self.option == "1":
+        command = '%s "%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s"' % (launcher, self.empresa,
+                                                                       self.cod_aduana, self.ano_prese,
+                                                                       self.cod_registro, self.num_dua,
+                                                                       self.num_orden, self.tipo_doc,
+                                                                       self.option, final_name)
         
-            command = '%s "%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s"' % (launcher, self.empresa,
-                                                                           self.cod_aduana, self.ano_prese,
-                                                                           self.cod_registro, self.num_dua,
-                                                                           self.num_orden, self.tipo_doc,
-                                                                           self.option, final_name)
-        else:
-            command = '%s "%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s"' % (launcher, self.empresa,
-                                                                      self.cod_aduana, self.ano_prese,
-                                                                      self.cod_registro, self.num_dua,
-                                                                      self.num_orden, self.tipo_doc, self.option)
+        return command
+    
+    def get_html_file(self):
+        launcher = os.path.join(self.bin_folder,"projectaduana")
         
+        command = '%s "%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s"' % (launcher, self.empresa,
+                                                                  self.cod_aduana, self.ano_prese,
+                                                                  self.cod_registro, self.num_dua,
+                                                                  self.num_orden, self.tipo_doc, self.option)
         return command
     
     def read_html(self):
@@ -215,51 +218,62 @@ class Aduana(object):
     def execute(self):
         obj_command = Commands()
         
-        while True:
-            command_previous_cookie = self.get_previous_cookie()
-            #print command_previous_cookie
-            obj_command.execute_command(command_previous_cookie)
-            dict_result_previous_cookie = obj_command.get_final_result()
-            
-            if dict_result_previous_cookie["result"]:
-                image_file = self.move_cookie_folder()
-                captcha = self.get_captcha(image_file)
-                print captcha
+        if self.option == "1":
+        
+            while True:
+                command_previous_cookie = self.get_previous_cookie()
+                #print command_previous_cookie
+                obj_command.execute_command(command_previous_cookie)
+                dict_result_previous_cookie = obj_command.get_final_result()
                 
-                if len(captcha) > 2 and len(captcha) <= 4:
-                    command = self.set_command(captcha)
-                
-                    obj_command.execute_command(command)
-                    dict_final_result = obj_command.get_final_result()
+                if dict_result_previous_cookie["result"]:
+                    image_file = self.move_cookie_folder()
+                    captcha = self.get_captcha(image_file)
+                    print captcha
                     
-                    if dict_final_result["result"]:
-                        if self.check_successfull_captcha(dict_final_result["message"]):
-                            self.move_final_destination()
-                            self.read_html()
-                            final_cmmd = self.save_data()
-                            obj_command.execute_command(final_cmmd)
-                            dict_save = obj_command.get_final_result()
-                            if dict_save["message"] == None:
-                                self.final_result = ""
+                    if len(captcha) > 2 and len(captcha) <= 4:
+                        command = self.set_command(captcha)
+                    
+                        obj_command.execute_command(command)
+                        dict_final_result = obj_command.get_final_result()
+                        
+                        if dict_final_result["result"]:
+                            if self.check_successfull_captcha(dict_final_result["message"]):
+                                self.move_final_destination()
+                                self.read_html()
+                                final_cmmd = self.save_data()
+                                obj_command.execute_command(final_cmmd)
+                                dict_save = obj_command.get_final_result()
+                                
+                                if dict_save["message"] == None:
+                                    self.final_result = ""
+                                else:
+                                    self.final_result = self.final_html
+                                                                
+                                break
                             else:
-                                self.final_result = dict_save["message"]                                
-                            break
+                                print dict_final_result["message"]
+                                self.clean_data(image_file)
+                                continue
                         else:
                             print dict_final_result["message"]
                             self.clean_data(image_file)
                             continue
                     else:
-                        print dict_final_result["message"]
                         self.clean_data(image_file)
                         continue
+                            
                 else:
-                    self.clean_data(image_file)
                     continue
-                        
+        # Fin del proceso si la option es 1
+        else:
+            command = self.get_html_file()
+            obj_command.execute_command(command)
+            dict_result = obj_command.get_final_result()
+            if dict_result["message"] == None:
+                self.final_result = ""
             else:
-                continue
-        
-        #self.clean_data(image_file)
+                self.final_result = dict_result["message"]
     
     def get_result(self):
         return self.final_result

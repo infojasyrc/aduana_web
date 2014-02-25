@@ -46,9 +46,11 @@ class Gossip(object):
         aduana = Aduana()
         aduana.set_parameters(empresa, cod_aduana, ano_prese, cod_regi, num_orden, num_dua, self.tipo_doc, option)
         aduana.execute()
-        aduana.clean_data()
+        if option == "1":
+            aduana.clean_data()
+        
         result = aduana.get_result()
-        #print result
+        
         return result
     
     def getCaptcha(self):

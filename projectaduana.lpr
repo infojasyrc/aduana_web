@@ -71,7 +71,7 @@ var
 
 begin
   contenido_html:=lector_html(html);
-  admindb.otro_insert(empresa,cod_aduana,ano_pre,cod_regi,num_dua,num_orden,tipo_doc,contenido_html);
+  admindb.graba_datos(empresa,cod_aduana,ano_pre,cod_regi,num_dua,num_orden,tipo_doc,html,contenido_html);
 
 end;
 
@@ -121,10 +121,10 @@ begin
   num_orden:=ParamStr(6);
   tipo_doc:=ParamStr(7);
   opcion_respuesta:=ParamStr(8);
-  archivo_html:=ParamStr(9);
 
   if opcion_respuesta = '1' then
   begin
+    archivo_html:=ParamStr(9);
     if FileExists(archivo_html) then
     begin
       aplicacion(empresa,cod_aduana,ano_prese,cod_regi,num_dua,num_orden,tipo_doc,archivo_html);
