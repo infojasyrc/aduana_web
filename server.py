@@ -57,6 +57,7 @@ def set_information(empresa, cod_aduana, num_orden, num_dua, cod_regi, ano_prese
         aduana.clean_data()
     
     result = aduana.get_result()
+    result += "\n"
     
     return result
 
