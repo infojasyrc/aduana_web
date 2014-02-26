@@ -28,9 +28,10 @@ def handle(connection, address):
             cod_regi = mylist[3].strip()
             ano_prese = mylist[4].strip()
             num_dua = mylist[5].strip()
-            option = mylist[6].strip()
+            tipo_doc = mylist[6].strip()
+            option = mylist[7].strip()
             
-            result = set_information(empresa, cod_aduana, num_orden, num_dua, cod_regi, ano_prese, option)
+            result = set_information(empresa, cod_aduana, num_orden, num_dua, cod_regi, ano_prese, tipo_doc, option)
             
             #logger.debug("Received data %r", data)
             logger.debug("Received data %r", data)
@@ -47,8 +48,7 @@ def handle(connection, address):
         logger.debug("Closing socket")
         connection.close()
 
-def set_information(empresa, cod_aduana, num_orden, num_dua, cod_regi, ano_prese, option):
-    tipo_doc = "01"
+def set_information(empresa, cod_aduana, num_orden, num_dua, cod_regi, ano_prese, tipo_doc, option):
     
     aduana = Aduana()
     aduana.set_parameters(empresa, cod_aduana, ano_prese, cod_regi, num_orden, num_dua, tipo_doc, option)

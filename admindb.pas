@@ -110,11 +110,40 @@ var
   query_select: String;
   parameters_conexion:TStringList;
   local_file:String;
+  rows_affected:Integer;
 begin
-  query_select:='SELECT ARCHIVO_LOCAL FROM ORDEN_SEMAFORO_WEB WHERE';
+  query_select:='SELECT COUNT(*) CONTADOR FROM ORDEN WHERE';
   query_select:=query_select+' EMPRESA=:EMPRESA AND ANO_PRESE=:ANO_PRESE';
   query_select:=query_select+' AND CODI_ADUAN=:CODI_ADUAN AND CODI_REGI=:CODI_REGI';
   query_select:=query_select+' AND NUME_ORDEN=:NUME_ORDEN AND NUM_DUA=:NUM_DUA';
+  query_select:=query_select+' AND FEC_RETIRO IS NOT NULL';
+
+  try
+     parameters_conexion:=lector_ini();
+
+     conexion_oracle:=conexion();
+     query_oracle:=TZQuery.create(nil);
+
+     query_oracle.Connection:=conexion_oracle;
+     query_oracle.SQL.Clear;
+
+     query_oracle.SQL.Add(query_select);
+     query_oracle.ParamByName('EMPRESA').AsString:=empresa;
+     query_oracle.ParamByName('ANO_PRESE').AsString:=ano_pre;
+     query_oracle.ParamByName('CODI_ADUAN').AsString:=cod_aduana;
+     query_oracle.ParamByName('CODI_REGI').AsString:=cod_regi;
+     query_oracle.ParamByName('NUME_ORDEN').AsString:=num_orden;
+     query_oracle.ParamByName('NUM_DUA').AsString:=num_dua;
+
+     query_oracle.Prepare;
+
+     query_oracle.Open;
+     rows_affected:=query_oracle.FieldByName('CONTADOR').AsInteger;
+     query_oracle.Close;
+
+     conexion_oracle.Commit;
+  finally
+  end;
 
 end;
 
@@ -169,7 +198,7 @@ var
   // Crea una conexion
   conexion_oracle: TZConnection;
   query_oracle: TZQuery;
-  query_insert,query_select,query_update:String;
+  query_insert,query_select,query_update,query_select2:String;
   parameters_conexion:TStringList;
   tiempo_actual:TDateTime;
   rows_affected:Integer;
@@ -205,7 +234,6 @@ begin
 
      query_oracle.Open;
      rows_affected:=query_oracle.FieldByName('CONTADOR').AsInteger;
-     //WriteLn(rows_affected);
      query_oracle.Close;
 
      if (rows_affected = 0) then
@@ -233,6 +261,30 @@ begin
      end
      else
      begin
+
+       query_select2:='SELECT FECHA_ACTUAL, ARCHIVO_LOCAL FROM ORDEN_SEMAFORO_WEB WHERE';
+       query_select2:=query_select2+' EMPRESA=:EMPRESA AND ANO_PRESE=:ANO_PRESE';
+       query_select2:=query_select2+' AND CODI_ADUAN=:CODI_ADUAN AND CODI_REGI=:CODI_REGI';
+       query_select2:=query_select2+' AND NUME_ORDEN=:NUME_ORDEN AND NUM_DUA=:NUM_DUA'
+       ;
+
+       query_oracle.SQL.Clear;
+
+       query_oracle.SQL.Add(query_select2);
+       query_oracle.ParamByName('EMPRESA').AsString:=empresa;
+       query_oracle.ParamByName('ANO_PRESE').AsString:=ano_pre;
+       query_oracle.ParamByName('CODI_ADUAN').AsString:=cod_aduana;
+       query_oracle.ParamByName('CODI_REGI').AsString:=cod_regi;
+       query_oracle.ParamByName('NUME_ORDEN').AsString:=num_orden;
+       query_oracle.ParamByName('NUM_DUA').AsString:=num_dua;
+
+       query_oracle.Prepare;
+       query_oracle.Open;
+       fecha_ultimo_actualizacion:=query_oracle.FieldByName('FECHA_ACTUAL').AsDateTime;
+       archivo_local:=query_oracle.FieldByName('ARCHIVO_LOCAL').AsString;
+       query_oracle.Close;
+
+
 
        query_update:='UPDATE ORDEN_SEMAFORO_WEB SET CONTENIDO_WEB=:CONTENIDO, FECHA_ACTUAL=:FECHA_ACTUAL,';
        query_update:=query_update+' ARCHIVO_LOCAL=:ARCHIVO';

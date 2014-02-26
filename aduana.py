@@ -225,7 +225,6 @@ class Aduana(object):
         obj_command = Commands()
         
         if self.option == "1":
-        
             while True:
                 command_previous_cookie = self.get_previous_cookie()
                 #print command_previous_cookie
