@@ -5,7 +5,7 @@ unit admindb;
 interface
 
 uses
-  Classes, SysUtils, oracleconnection, sqldb, IniFiles, ZConnection, ZDataset,db;
+  Classes, SysUtils, oracleconnection, sqldb, IniFiles, ZConnection, ZDataset,db, DateUtils;
   //Classes, SysUtils, oracleconnection, sqldb, IniFiles;
   function obtiene_archivo_ini():String;
   function lector_ini():TStringList;
@@ -200,8 +200,10 @@ var
   query_oracle: TZQuery;
   query_insert,query_select,query_update,query_select2:String;
   parameters_conexion:TStringList;
-  tiempo_actual:TDateTime;
+  tiempo_actual,ultima_actualizacion:TDateTime;
+  diferencia_tiempo:Int64;
   rows_affected:Integer;
+  archivo_local:String;
 
 begin
 
@@ -258,6 +260,11 @@ begin
        query_oracle.ParamByName('FECHA_ACTUAL').AsDate:=tiempo_actual;
        query_oracle.ParamByName('CONTENIDO').AsBlob:=contenido.Text;
        query_oracle.ParamByName('ARCHIVO').AsString:=archivo;
+
+       query_oracle.Prepare;
+       query_oracle.ExecSQL;
+       query_oracle.Close;
+
      end
      else
      begin
@@ -265,8 +272,7 @@ begin
        query_select2:='SELECT FECHA_ACTUAL, ARCHIVO_LOCAL FROM ORDEN_SEMAFORO_WEB WHERE';
        query_select2:=query_select2+' EMPRESA=:EMPRESA AND ANO_PRESE=:ANO_PRESE';
        query_select2:=query_select2+' AND CODI_ADUAN=:CODI_ADUAN AND CODI_REGI=:CODI_REGI';
-       query_select2:=query_select2+' AND NUME_ORDEN=:NUME_ORDEN AND NUM_DUA=:NUM_DUA'
-       ;
+       query_select2:=query_select2+' AND NUME_ORDEN=:NUME_ORDEN AND NUM_DUA=:NUM_DUA';
 
        query_oracle.SQL.Clear;
 
@@ -280,33 +286,44 @@ begin
 
        query_oracle.Prepare;
        query_oracle.Open;
-       fecha_ultimo_actualizacion:=query_oracle.FieldByName('FECHA_ACTUAL').AsDateTime;
+       ultima_actualizacion:=query_oracle.FieldByName('FECHA_ACTUAL').AsDateTime;
        archivo_local:=query_oracle.FieldByName('ARCHIVO_LOCAL').AsString;
        query_oracle.Close;
 
+       diferencia_tiempo:=MinutesBetween(ultima_actualizacion,tiempo_actual);
 
+       if(diferencia_tiempo > 5) then
+       begin
 
-       query_update:='UPDATE ORDEN_SEMAFORO_WEB SET CONTENIDO_WEB=:CONTENIDO, FECHA_ACTUAL=:FECHA_ACTUAL,';
-       query_update:=query_update+' ARCHIVO_LOCAL=:ARCHIVO';
-       query_update:=query_update+' WHERE EMPRESA=:EMPRESA AND ANO_PRESE=:ANO_PRESE';
-       query_update:=query_update+' AND CODI_ADUAN=:CODI_ADUAN AND CODI_REGI=:CODI_REGI';
-       query_update:=query_update+' AND NUME_ORDEN=:NUME_ORDEN';
+         query_update:='UPDATE ORDEN_SEMAFORO_WEB SET CONTENIDO_WEB=:CONTENIDO, FECHA_ACTUAL=:FECHA_ACTUAL,';
+         query_update:=query_update+' ARCHIVO_LOCAL=:ARCHIVO';
+         query_update:=query_update+' WHERE EMPRESA=:EMPRESA AND ANO_PRESE=:ANO_PRESE';
+         query_update:=query_update+' AND CODI_ADUAN=:CODI_ADUAN AND CODI_REGI=:CODI_REGI';
+         query_update:=query_update+' AND NUME_ORDEN=:NUME_ORDEN';
 
-       query_oracle.SQL.Clear;
-       query_oracle.SQL.Add(query_update);
-       query_oracle.ParamByName('EMPRESA').AsString:=empresa;
-       query_oracle.ParamByName('ANO_PRESE').AsString:=ano_pre;
-       query_oracle.ParamByName('CODI_ADUAN').AsString:=cod_aduana;
-       query_oracle.ParamByName('CODI_REGI').AsString:=cod_regi;
-       query_oracle.ParamByName('NUME_ORDEN').AsString:=num_orden;
-       query_oracle.ParamByName('FECHA_ACTUAL').AsDate:=tiempo_actual;
-       query_oracle.ParamByName('CONTENIDO').AsBlob:=contenido.Text;
-       query_oracle.ParamByName('ARCHIVO').AsString:=archivo;
+         query_oracle.SQL.Clear;
+         query_oracle.SQL.Add(query_update);
+         query_oracle.ParamByName('EMPRESA').AsString:=empresa;
+         query_oracle.ParamByName('ANO_PRESE').AsString:=ano_pre;
+         query_oracle.ParamByName('CODI_ADUAN').AsString:=cod_aduana;
+         query_oracle.ParamByName('CODI_REGI').AsString:=cod_regi;
+         query_oracle.ParamByName('NUME_ORDEN').AsString:=num_orden;
+         query_oracle.ParamByName('FECHA_ACTUAL').AsDate:=tiempo_actual;
+         query_oracle.ParamByName('CONTENIDO').AsBlob:=contenido.Text;
+         query_oracle.ParamByName('ARCHIVO').AsString:=archivo;
+
+         query_oracle.Prepare;
+         query_oracle.ExecSQL;
+         query_oracle.Close;
+
+         WriteLn(archivo);
+       end
+       else
+       begin
+         WriteLn(archivo_local);
+       end;
+
      end;
-
-     query_oracle.Prepare;
-     query_oracle.ExecSQL;
-     query_oracle.Close;
 
      conexion_oracle.Commit;
 

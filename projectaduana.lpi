@@ -28,7 +28,7 @@
       <local>
         <FormatVersion Value="1"/>
         <HostApplicationFilename Value="/home/dev/workspace/aduana-captcha/bin/projectaduana"/>
-        <CommandLineParams Value="&quot;001&quot; &quot;118&quot; &quot;2014&quot; &quot;10&quot; &quot;030541&quot; &quot;001287&quot; &quot;01&quot; &quot;0&quot;"/>
+        <CommandLineParams Value="&quot;001&quot; &quot;118&quot; &quot;2014&quot; &quot;10&quot; &quot;030541&quot; &quot;001287&quot; &quot;01&quot; &quot;1&quot; &quot;/home/dev/workspace/aduana-captcha/final/final_20140227105752_2.html&quot;"/>
       </local>
     </RunParams>
     <RequiredPackages Count="4">
