@@ -4,19 +4,19 @@ Created on Feb 13, 2014
 @author: Jose Antonio Sal y Rosas Celi
 '''
 
-from captcha import Captcha
+from captcha2 import Captcha2
 from utils.commands import Commands
 import os
 import random
-from datetime import datetime
-import ConfigParser
-import shutil
 import re
-from string import replace
 import unicodedata
+import urllib, urllib2
+import ConfigParser
+from datetime import datetime
+from string import replace
 
 
-class Aduana(object):
+class Aduana3(object):
 
     def __init__(self):
         self.project_folder = os.path.dirname(__file__)
@@ -52,52 +52,61 @@ class Aduana(object):
         
         self.cookie_file = os.path.join(self.cookies_folder, filename+".txt")
         
-        self.url_captcha, self.url_form = self.read_config()
+        self.dict_urls = self.read_config()
+    
+    def get_cookie(self):
+        init_time = datetime.now()
+        
+        req1 = urllib2.Request(self.dict_urls["captcha"])
+        response = urllib2.urlopen(req1)
+        cookie = response.headers.get('Set-Cookie')
+        cookie_value = cookie.split(";")[0].strip()
+        
+        image_file = self.filename+".jpg"
+        dst = os.path.join(self.captcha_folder, image_file)
+        with open(dst, 'w') as f: f.write(response.read())
+        f.close()
+        
+        final_time = datetime.now()
+        
+        print "Tiempo de Obtencion de Imagen y Cookie: %s" % (final_time-init_time)
+        
+        return cookie_value, dst
+    
+    def post_data_form(self, cookie, captcha):
+        init_time = datetime.now()
+        
+        post_data_dict = {"codi_aduan": self.cod_aduana, "ano_prese": self.ano_prese,
+                          "codi_regi": self.cod_registro, "nume_corre": self.num_orden,
+                          "nume_sufi": "00", "Prov":"1",
+                          "tipo_doc": self.tipo_doc, "codigo": captcha,
+                          }
+        
+        post_data_encoded = urllib.urlencode(post_data_dict)
+        # Use the cookie is subsequent requests
+        req2 = urllib2.Request(self.dict_urls["form"], post_data_encoded)
+        req2.add_header('cookie', cookie)
+        response = urllib2.urlopen(req2)
+        
+        final_time = datetime.now()
+        
+        print "Tiempo de Obtencion de Fomulario Web: %s" % (final_time-init_time)
+        
+        return response
     
     def get_captcha(self, image_file):
-        self.obj_captcha = Captcha()
-        self.obj_captcha.set_parameters(self.filename, self.captcha_folder, self.url_captcha)
+        init_time = datetime.now()
+        
+        self.obj_captcha = Captcha2()
+        self.obj_captcha.set_parameters(self.filename, self.captcha_folder)
         self.obj_captcha.execute(image_file)
         text = self.obj_captcha.get_text_captcha()
+        
+        final_time = datetime.now()
+        
+        print "Tiempo de Obtencion de captcha: %s" % (final_time-init_time)
 
         return text
-    
-    def get_previous_cookie(self):
-        # Command:
-        # wget --save-cookies '\path\to\cookie_folder\cookies.txt 
-        # --keep-session-cookies -r -P \path\to\cookie_folder -nH url
-        
-        launcher = "wget"
-        parameter_cookie = '--save-cookies %s' % self.cookie_file
-        parameter_prefix = '-r -P %s'% self.cookies_folder
-        parameter_session = '--keep-session-cookies'
-        parameter_no_folder = '-nH'
-        
-        command = "%s %s %s %s %s %s" % (launcher, parameter_cookie, parameter_session,
-                                         parameter_prefix, parameter_no_folder, self.url_captcha)
-        
-        return command
-    
-    def move_file(self, src, dst):
-        try:
-            shutil.move(src, dst)
-        except IOError:
-            print "Error en el archivo de origen: %s" % src
-    
-    def move_cookie_folder(self):
-        tmp_folder = os.path.join(self.cookies_folder, "ol-ad-ao")
-        src = os.path.join(tmp_folder,"captcha?accion=image")
-        
-        dst = os.path.join(self.captcha_folder, self.filename+".jpeg")
-        
-        self.move_file(src, dst)
-        
-        return dst
-    
-    def move_final_destination(self):
-        src = os.path.join(self.cookies_folder,"LevanteDuaServlet")
-        self.final_html = os.path.join(self.final_folder,self.filename+".html")
-        self.move_file(src, self.final_html)
     
     def clean_data(self, image_file=""):
         try:
@@ -136,38 +145,14 @@ class Aduana(object):
         else:
             return True
     
-    def set_command(self, captcha):
-        parameter_cod_aduana = 'codi_aduan=%s' % self.cod_aduana
-        parameter_ano_prese = 'ano_prese=%s' % self.ano_prese
-        parameter_cod_registro = 'codi_regi=%s' % self.cod_registro
-        parameter_correlativo = 'nume_corre=%s' % self.num_orden
-        parameter_tipo_doc = 'tipo_doc=%s' % self.tipo_doc
-        parameter_captcha = 'codigo=%s' % captcha
-        
-        value_post = '%s&%s&%s&%s&%s&%s' % (parameter_cod_aduana, parameter_ano_prese, parameter_cod_registro,
-                                            parameter_correlativo, parameter_tipo_doc, parameter_captcha)
-        
-        launcher = "wget"
-        parameter_cookie = '--load-cookies "%s"' % self.cookie_file
-        parameter_prefix = '-P "%s"'% self.cookies_folder
-        parameter_session = '--keep-session-cookies'
-        parameter_post = '--post-data="%s"' % value_post
-        
-        command = "%s %s %s %s %s %s" % (launcher, parameter_post, parameter_session, parameter_cookie,
-                                         parameter_prefix, self.url_form)
-        
-        return command
-    
-    def save_data(self):
-        final_name = os.path.join(self.final_folder,"final_"+self.filename+".html")
-        
+    def save_data(self, final_html):
         launcher = os.path.join(self.bin_folder,"projectaduana")
         
         command = '%s "%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s" "%s"' % (launcher, self.empresa,
                                                                        self.cod_aduana, self.ano_prese,
                                                                        self.cod_registro, self.num_dua,
                                                                        self.num_orden, self.tipo_doc,
-                                                                       self.option, final_name)
+                                                                       self.option, final_html)
         
         return command
     
@@ -180,18 +165,19 @@ class Aduana(object):
                                                                   self.num_orden, self.tipo_doc, self.option)
         return command
     
-    def read_html(self):
+    def read_html(self, html_file):
+        init_time = datetime.now()        
         new_data = ""
-        if os.path.exists(self.final_html):
-            tmp_file = open(self.final_html,"r")
+        
+        if os.path.exists(html_file):
+            tmp_file = open(html_file,"r")
             for line in tmp_file:
-                #print line.strip()
                 if line.strip() == '' or line.strip() == '\n':
                     continue
                 else:
-                    #print line.decode('Windows-1252').encode('utf-8')
                     new_data += line.strip().decode('Windows-1252').encode('utf-8')
             tmp_file.close()
+            
         if new_data != "":
             output = re.sub(r'<SCRIPT.*>(.*)</SCRIPT><B', '<B', new_data)
             output = replace(output, "'", '"')
@@ -208,7 +194,14 @@ class Aduana(object):
             final_name = os.path.join(self.final_folder,"final_"+self.filename+".html")
             final_html_file = open(final_name,"w")
             final_html_file.write(new_output)
-            final_html_file.close() 
+            final_html_file.close()
+        else:
+            final_name = ""
+        
+        final_time = datetime.now()
+        print "Tiempo de Formateo de HTML: %s" % (final_time-init_time)
+        
+        return final_name
     
     def read_config(self):
         config_file = os.path.join(self.bin_folder,"config.ini")
@@ -216,60 +209,58 @@ class Aduana(object):
         config = ConfigParser.ConfigParser()
         config.read(config_file)
         
-        url_captcha = str(config.get('basic','url_captcha'))
-        url_final = str(config.get('basic','url_final'))
+        dict_urls = {"captcha": str(config.get('basic','url_captcha')),
+                     "final": str(config.get('basic','url_final')),
+                     "form": str(config.get('basic','url_final')),
+                     }
         
-        return url_captcha, url_final
+        return dict_urls
     
     def execute(self):
         obj_command = Commands()
         
         if self.option == "1":
             while True:
-                command_previous_cookie = self.get_previous_cookie()
-                #print command_previous_cookie
-                obj_command.execute_command(command_previous_cookie)
-                dict_result_previous_cookie = obj_command.get_final_result()
+                cookie, final_image = self.get_cookie() 
                 
-                if dict_result_previous_cookie["result"]:
-                    image_file = self.move_cookie_folder()
-                    captcha = self.get_captcha(image_file)
-                    print captcha
+                captcha = self.get_captcha(final_image)
+                #print captcha
                     
-                    if len(captcha) > 2 and len(captcha) <= 4:
-                        command = self.set_command(captcha)
+                if len(captcha) > 2 and len(captcha) <= 4:
+                    response = self.post_data_form(cookie, captcha)
                     
-                        obj_command.execute_command(command)
-                        dict_final_result = obj_command.get_final_result()
+                    if response.code == 200:
+                        html_file = self.filename+".html"
                         
-                        if dict_final_result["result"]:
-                            if self.check_successfull_captcha(dict_final_result["message"]):
-                                self.move_final_destination()
-                                self.read_html()
-                                final_cmmd = self.save_data()
-                                obj_command.execute_command(final_cmmd)
-                                dict_save = obj_command.get_final_result()
-                                
-                                if dict_save["message"] == None:
-                                    self.final_result = ""
-                                else:
-                                    self.final_result = self.final_html
-                                                                
-                                break
-                            else:
-                                print dict_final_result["message"]
-                                self.clean_data(image_file)
-                                continue
+                        final_html = os.path.join(self.captcha_folder, html_file)
+                        with open(final_html, 'w') as f: f.write(response.read())
+                        f.close()
+                        
+                        format_final_html = self.read_html(final_html)
+                        
+                        final_cmmd = self.save_data(format_final_html)
+                        
+                        init_time = datetime.now()
+                        obj_command.execute_command(final_cmmd)
+                        final_time = datetime.now()
+                        print "Tiempo de Ejecucion en Oracle: %s" % (final_time-init_time)
+                        
+                        dict_save = obj_command.get_final_result()
+                        
+                        if dict_save["message"] == None:
+                            self.final_result = ""
                         else:
-                            print dict_final_result["message"]
-                            self.clean_data(image_file)
-                            continue
+                            self.final_result = self.final_html
+                                                       
+                        break
+                        
                     else:
-                        self.clean_data(image_file)
                         continue
-                            
+                    
                 else:
+                    self.clean_data(final_image)
                     continue
+                
         # Fin del proceso si la option es 1
         else:
             command = self.get_html_file()
@@ -294,14 +285,12 @@ if __name__ == '__main__':
     tipo_doc = "01"
     option = "1"
     
-    aduana = Aduana()
+    aduana = Aduana3()
     aduana.set_parameters(empresa, cod_aduana, ano_prese, cod_registro, num_orden, num_dua, tipo_doc, option)
-    
     init_time = datetime.now()
     aduana.execute()
     final_time = datetime.now()
     print "Tiempo total: %s" % (final_time-init_time)
-    
-    aduana.clean_data()
+    #aduana.clean_data()
     print aduana.get_result()
     
