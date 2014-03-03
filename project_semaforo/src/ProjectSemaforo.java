@@ -14,7 +14,7 @@ public class ProjectSemaforo {
 
     private final String USER_AGENT = "Mozilla/5.0";
     private final String SET_COOKIE = "Set-Cookie";
-    private final String EXPIRES = "expires";
+    //private final String EXPIRES = "expires";
 
     public static String image_file = "";
     public static String prefix_file = "";
@@ -57,8 +57,6 @@ public class ProjectSemaforo {
                 System.out.println("Error en parametros o en la conexion a la pagina web");
             }
         }
-
-
     }
 
     public void set_parameters(String in_codi_aduan, String in_ano_prese, String in_codi_regi, String in_nume_corre,
@@ -70,8 +68,7 @@ public class ProjectSemaforo {
         tipo_doc = in_tipo_doc;
     }
 
-    public String fill2(int value)
-    {
+    public String fill2(int value) {
         String erg = String.valueOf(value);
 
         if (erg.length() < 2)
@@ -79,8 +76,7 @@ public class ProjectSemaforo {
         return erg;
     }
 
-    public String get_duration(Date date1, Date date2)
-    {
+    public String get_duration(Date date1, Date date2) {
         TimeUnit timeUnit = TimeUnit.SECONDS;
 
         long diffInMillies = date2.getTime() - date1.getTime();

@@ -12,7 +12,6 @@ public class admindb {
 
     public static void initClient(String host, int port, String parametros) {
         //Socket sc;
-        BufferedReader in = null;
         //String str = "001:118:021349:40:2013:103086:0";
         String str = parametros;
         try {
@@ -33,13 +32,7 @@ public class admindb {
             BufferedReader br = new BufferedReader(isr);
             String message = br.readLine();
             System.out.println("Message received from the server : " +message);
-            /*
-            in = new BufferedReader(new InputStreamReader(sc.getInputStream()));
-            String line;
-            while ((line = in.readLine()) != null) {
-                System.out.println(line);
-            }
-            */
+            
         } catch(Exception e ) {
             System.out.println("Error: "+e.getMessage());
         } finally {
